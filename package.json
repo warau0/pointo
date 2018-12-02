@@ -1,0 +1,29 @@
+{
+  "name": "pointo-bot",
+  "version": "1.0.0",
+  "description": "Discord bot that counts up points",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LarsWalter/pointo-bot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "basic",
+    "math"
+  ],
+  "author": "w",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LarsWalter/pointo-bot/issues"
+  },
+  "homepage": "https://github.com/LarsWalter/pointo-bot#readme",
+  "dependencies": {
+    "discord.io": "^2.5.3",
+    "winston": "^3.1.0"
+  }
+}
