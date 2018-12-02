@@ -64,7 +64,7 @@ export function fetchScores(sheets, sheetID) {
       }
 
       const rows = res.data.values;
-      if (rows.length) {
+      if (rows && rows.length) {
         return resolve(
           rows.map((row, index) => ({
             // Order of sheet columns.
