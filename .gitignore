@@ -1,4 +1,7 @@
 .idea
 node_modules/
 dist/
+db/
+archive/
+
 auth.json

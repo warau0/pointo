@@ -14,7 +14,7 @@ bot.on('ready', () => {
 
 bot.on('message', (username, userID, channelID, fullMessage, evt) => {
   if (utils.isCommand(fullMessage)) {
-    console.log(fullMessage);
+    console.log(`[${username}] ${fullMessage}`);
     const args = fullMessage ? fullMessage.substring(1).split(' ') : ['invalid', ''];
     const command = args[0];
     const message = args.splice(1).join(' ');
@@ -36,8 +36,11 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
       case 'highscore':
       case 'highscores':
       case 'leaderboard':
-      case 'leaderboards': commands.leaderboard({ send }); break;
-      case 'reset': commands.reset({ send, userID }); break;
+      case 'leaderboards': commands.leaderboard({ send }); break; // TODO
+      case 'reset':
+      case 'archive': commands.archive({ send, userID }); break;
+      case 'commands':
+      case 'help': commands.help({ send });
       default: break;
     }
   }
