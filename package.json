@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/LarsWalter/pointo-bot#readme",
   "dependencies": {
-    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6"
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "googleapis": "^35.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",

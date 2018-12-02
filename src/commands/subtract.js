@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 
-export default function subtract({ bot, channelID, send, username, userID, message }) {
+export default function subtract({ send, username, userID, message, scores, sheets, sheetID }) {
   if (!message) return;
   const number = parseInt(message, 10);
   if (isNaN(number)) {
@@ -8,11 +8,13 @@ export default function subtract({ bot, channelID, send, username, userID, messa
     return;
   }
 
-  const userObject = utils.getUser(userID, username);
+  const userObject = utils.getUser(scores, userID, username);
+  const newScore = number > userObject.score ? 0 : userObject.score - number;
 
-  userObject.score = userObject.score - parseInt(message, 10);
-  if (userObject.score < 0) userObject.score = 0;
+  userObject.scoreFormula = utils.appendFormula(userObject.scoreFormula, `-${newScore ? number : userObject.score}`);
+  userObject.score = newScore;
 
-  utils.saveUser(userObject);
-  send(`${username}: +${message}! Total: ${userObject.score}`);
+  utils.saveUser(sheets, sheetID, scores,  userObject).then(() => {
+    send(`${username}: -${message}! Total: ${userObject.score}`);
+  });
 };

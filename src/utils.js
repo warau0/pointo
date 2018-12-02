@@ -1,9 +1,10 @@
 import fs from 'fs';
+import readline from 'readline';
+import { google } from 'googleapis';
 import * as admins from './admins';
 
 export function isCommand(msg) {
   const commandChar = ['!', '.', '-'];
-
   return commandChar.indexOf(msg.substring(0, 1)) !== -1;
 }
 
@@ -11,24 +12,126 @@ export function isAdmin(userID) {
   return admins.admins.indexOf(`${userID}`) !== -1;
 }
 
-export function getUser(userID, username) {
-  const file = `db/${userID}.json`;
-
-  if (fs.existsSync(file)) {
-    const content = fs.readFileSync(file, 'utf8');
-    return JSON.parse(content);
+export function getUser(scores, userID, name) {
+  if (scores.hasOwnProperty(userID)) {
+    return scores[userID];
+  } else {
+    return {
+      id: userID,
+      name,
+      score: 0,
+      scoreFormula: '=0'
+    };
   }
-
-  return {
-    username,
-    userID,
-    score: 0
-  };
 }
 
-export function saveUser(user) {
-  if (!fs.existsSync('db')){
-    fs.mkdirSync('db');
-  }
-  fs.writeFileSync(`db/${user.userID}.json`, JSON.stringify(user), 'utf8')
+export function saveUser(sheets, sheetID, scores, user) {
+  return new Promise((resolve, reject) => {
+    function cb(err, res) {
+      if (err) {
+        console.log('Google API error:', err);
+        return reject('Google API error');
+      }
+
+      return resolve();
+    }
+
+    scores[user.id] = user;
+
+    sheets.spreadsheets.values.update({
+      spreadsheetId: sheetID,
+      valueInputOption: 'USER_ENTERED',
+      range: `Current!A$2:C`,
+      resource: { values: Object.entries(scores)
+          .map(item => item[1])
+          .sort((a, b) => b.score - a.score)
+          .map(item => { return [item.id, item.name, item.scoreFormula] })
+      }
+    }, cb);
+  });
+}
+
+export function fetchScores(sheets, sheetID) {
+  return new Promise((resolve, reject) => {
+    sheets.spreadsheets.values.get({
+      spreadsheetId: sheetID,
+      range: 'Current!A2:C', // Sheet data selector
+      valueRenderOption: 'FORMULA',
+    }, (err, res) => {
+      if (err) {
+        console.log('Google API error:', err);
+        return reject('Google API error');
+      }
+
+      const rows = res.data.values;
+      if (rows.length) {
+        return resolve(
+          rows.map((row, index) => ({
+            // Order of sheet columns.
+            id: row[0],
+            name: row[1],
+            scoreFormula: row[2],
+            score: basicFormulaTransform(row[2]),
+          })).reduce((map, user) => {
+            map[user.id] = { ...user };
+            return map;
+            }, {})
+        );
+      } else {
+        return resolve({});
+      }
+    });
+  });
+}
+
+function basicFormulaTransform(formula) {
+  if (!isNaN(parseInt(formula, 10))) return formula; // Not a formula.
+
+  return formula
+    .substring(1) // Remove '='.
+    .split('+') // Can only split up formulas containing pluses.
+    .reduce((add, num) => (add + parseInt(num, 10)), 0); // Add all numbers together.
+}
+
+export function appendFormula(formula, addition) {
+  let newFormula = formula;
+  if (!isNaN(parseInt(formula, 10))) newFormula = `=${formula}`;
+  return `${newFormula}+${addition}`;
+}
+
+export function getNewGoogleToken(oAuth2Client, callback) {
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  console.log('Authorize this app by visiting this url:', authUrl);
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  rl.question('Enter the code from that page here: ', (code) => {
+    rl.close();
+    oAuth2Client.getToken(code, (err, token) => {
+      if (err) return console.error('Error while trying to retrieve access token', err);
+      oAuth2Client.setCredentials(token);
+      fs.writeFile('token.json', JSON.stringify(token), (err) => {
+        if (err) console.error(err);
+        console.log('Token stored to token.json');
+      });
+      callback(oAuth2Client);
+    });
+  });
+}
+
+export function googleAuth(credentials, callback) {
+  const {client_secret, client_id, redirect_uris} = credentials.installed;
+  const oAuth2Client = new google.auth.OAuth2(
+    client_id, client_secret, redirect_uris[0]);
+
+  // Check if we have previously stored a token.
+  fs.readFile('token.json', (err, token) => {
+    if (err) return getNewGoogleToken(oAuth2Client, callback);
+    oAuth2Client.setCredentials(JSON.parse(token));
+    callback(oAuth2Client);
+  });
 }
