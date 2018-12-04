@@ -1,4 +1,4 @@
 export default function leaderboard({ send, sheetID }) {
-  send(':trophy: **Houses leaderboard**:');
-  send(`https://docs.google.com/spreadsheets/d/${sheetID}`);
+  send(`:trophy: **Houses leaderboard**:\n` +
+    `https://docs.google.com/spreadsheets/d/${sheetID}`);
 };

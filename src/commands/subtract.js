@@ -15,6 +15,6 @@ export default function subtract({ send, username, userID, message, scores, shee
   userObject.score = newScore;
 
   utils.saveUser(sheets, sheetID, scores,  userObject).then(() => {
-    send(`${username}: -${message}! Total: ${userObject.score}`);
+    send(`${username}: **-${message}**! Total: **${userObject.score}**`);
   });
 };

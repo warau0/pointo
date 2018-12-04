@@ -14,6 +14,6 @@ export default function add({ send, username, userID, message, scores, sheets, s
   userObject.scoreFormula = utils.appendFormula(userObject.scoreFormula, message);
 
   utils.saveUser(sheets, sheetID, scores,  userObject).then(() => {
-    send(`${username}: +${message}! Total: ${userObject.score}`);
+    send(`${username}: **+${message}**! Total: **${userObject.score}**`);
   });
 };
