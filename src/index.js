@@ -4,7 +4,13 @@ import { google } from 'googleapis';
 
 import * as utils from './utils';
 import * as commands from './commands';
-const config = require('../config.json');
+
+let config;
+try {
+  config = require('../config.json');
+} catch(e) {
+  throw('Error: config.json file does not exist in project root.');
+}
 const sheetID = config.sheetID;
 
 let sheets = {};
