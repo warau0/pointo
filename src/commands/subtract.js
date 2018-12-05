@@ -11,6 +11,7 @@ export default function subtract({ send, username, userID, message, scores, shee
   const userObject = utils.getUser(scores, userID, username);
   const newScore = number > userObject.score ? 0 : userObject.score - number;
 
+  userObject.name = username; // In case user has changed their name.
   userObject.scoreFormula = utils.appendFormula(userObject.scoreFormula, `-${newScore ? number : userObject.score}`);
   userObject.score = newScore;
 
