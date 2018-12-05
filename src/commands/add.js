@@ -4,7 +4,7 @@ export default function add({ send, username, userID, message, scores, sheets, s
   if (!message) return;
   const number = parseInt(message, 10);
   if (isNaN(number)) {
-    send('That\s not a number.. :thinking:');
+    send('That\'s not a number.. :thinking:');
     return;
   }
 
