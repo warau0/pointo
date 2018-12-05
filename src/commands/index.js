@@ -4,6 +4,8 @@ import subtract from './subtract';
 import leaderboard from './leaderboard';
 import archive from './archive';
 import help from './help';
+import give from './give';
+import take from './take';
 
 export {
   ping,
@@ -12,4 +14,6 @@ export {
   leaderboard,
   archive,
   help,
+  give,
+  take,
 }

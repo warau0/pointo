@@ -45,8 +45,10 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
 
     const send = (msg) => bot.sendMessage({ to: channelID, message: msg });
 
-    switch(command) {
+    switch(command.toLowerCase()) {
       case 'ping': commands.ping({ send }); break;
+      case 'commands':
+      case 'help': commands.help({ send }); break;
       case 'points':
       case 'plus':
       case 'add': commands.add({ send, username, userID, message, scores, sheets, sheetID  }); break;
@@ -57,10 +59,13 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
       case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
       case 'print':
       case 'scores': commands.leaderboard({ send, sheetID, scores }); break;
+
+      // Admin
+      case 'give': commands.give({ send, config, userID, message, scores, sheets, sheetID }); break;
+      case 'take': commands.take({ send, config, userID, message, scores, sheets, sheetID }); break;
       case 'reset':
       case 'archive': commands.archive({ send, config, userID }); break; // TODO
-      case 'commands':
-      case 'help': commands.help({ send }); break;
+
       case 'reload': {
         utils.fetchScores(sheets, sheetID).then(result => {
           scores = result;

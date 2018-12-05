@@ -11,10 +11,10 @@ export default function add({ send, username, userID, message, scores, sheets, s
   const userObject = utils.getUser(scores, userID, username);
 
   userObject.name = username; // In case user has changed their name.
-  userObject.score = userObject.score + parseInt(message, 10);
-  userObject.scoreFormula = utils.appendFormula(userObject.scoreFormula, message);
+  userObject.scoreFormula = utils.appendFormula(userObject.scoreFormula, number);
+  userObject.score = userObject.score + number;
 
-  utils.saveUser(sheets, sheetID, scores,  userObject).then(() => {
-    send(`${username}: **+${message}**! Total: **${userObject.score}**`);
+  utils.saveUser(sheets, sheetID, scores, userObject).then(() => {
+    send(`${username}: **+${number}**! Total: **${userObject.score}**`);
   });
 };

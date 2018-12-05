@@ -17,14 +17,22 @@ export function isAdmin(config, userID) {
 export function getUser(scores, userID, name) {
   if (scores.hasOwnProperty(userID)) {
     return scores[userID];
-  } else {
-    return {
-      id: userID,
-      name,
-      score: 0,
-      scoreFormula: '=0'
-    };
   }
+
+  return {
+    id: userID,
+    name,
+    score: 0,
+    scoreFormula: '=0'
+  };
+}
+
+export function searchForUser(scores, query) {
+  if (scores.hasOwnProperty(query)) {
+    return scores[query];
+  }
+
+  return Object.values(scores).find(user => user.name.toLowerCase() == query.toLowerCase());
 }
 
 export function saveUser(sheets, sheetID, scores, user) {

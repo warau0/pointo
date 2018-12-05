@@ -8,10 +8,10 @@ export default function leaderboard({ send } = {}) {
     '`!sub <number>`: Remove some of your points. Alt: `minus`, `subtract`\n' +
     '`!leaderboard`: Link to the score spreadsheet. Alt `data`\n' +
     '`!scores`: Print all scores to chat. Alt: `print`\n' +
-    '`!reload`: Reload the spreadsheet data.'
-    // TODO '__Admins:__\n' +
-    // '`!give <userID> <number>`: Give a user some points.\n' +
-    // '`!take <userID> <number>`: Take some points from a user.\n' +
+    '`!reload`: Reload the spreadsheet data.\n' +
+    '__Admins:__\n' +
+    '`!give <userID/name> <number>`: Give a user some points.\n' +
+    '`!take <userID/name> <number>`: Take some points from a user.'
     // '`!reset`: Clear all scores. Alt: `archive`'
   );
 };
