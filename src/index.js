@@ -47,9 +47,10 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
       case 'sub':
       case 'minus':
       case 'subtract': commands.subtract({ send, username, userID, message, scores, sheets, sheetID  }); break;
-      case 'scores':
+      case 'data':
       case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
-      case 'print': commands.leaderboard({ send, sheetID, scores }); break;
+      case 'print':
+      case 'scores': commands.leaderboard({ send, sheetID, scores }); break;
       case 'reset':
       case 'archive': commands.archive({ send, config, userID }); break; // TODO
       case 'commands':

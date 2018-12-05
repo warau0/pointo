@@ -6,8 +6,8 @@ export default function leaderboard({ send } = {}) {
     '`!help`: List all available commands. Alt: `commands`\n' +
     '`!add <number>`: Give yourself some points. Alt: `plus`, `points`\n' +
     '`!sub <number>`: Remove some of your points. Alt: `minus`, `subtract`\n' +
-    '`!leaderboard`: Link to the score spreadsheet. Alt: `scores`\n' +
-    '`!print`: Print all scores to chat.\n' +
+    '`!leaderboard`: Link to the score spreadsheet. Alt `data`\n' +
+    '`!scores`: Print all scores to chat. Alt: `print`\n' +
     '`!reload`: Reload the spreadsheet data.'
     // TODO '__Admins:__\n' +
     // '`!give <userID> <number>`: Give a user some points.\n' +
