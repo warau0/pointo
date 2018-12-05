@@ -54,7 +54,7 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
       case 'hiscore':
       case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
       case 'reset':
-      case 'archive': commands.archive({ send }); break; // TODO
+      case 'archive': commands.archive({ send, config, userID }); break; // TODO
       case 'h':
       case 'commands':
       case 'help': commands.help({ send }); break;

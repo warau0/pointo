@@ -1,15 +1,17 @@
 import fs from 'fs';
 import readline from 'readline';
 import { google } from 'googleapis';
-import * as admins from './admins';
 
 export function isCommand(msg) {
   const commandChar = ['!', '.', '-'];
   return commandChar.indexOf(msg.substring(0, 1)) !== -1;
 }
 
-export function isAdmin(userID) {
-  return admins.admins.indexOf(`${userID}`) !== -1;
+export function isAdmin(config, userID) {
+  if (config && config.admins && config.admins.length) {
+    return config.admins.indexOf(`${userID}`) !== -1;
+  }
+  return false;
 }
 
 export function getUser(scores, userID, name) {
