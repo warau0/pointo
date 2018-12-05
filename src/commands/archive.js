@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 
-export default function archive({ send, config, userID }) {
+export default function archive({ send, config, userID } = {}) {
   if (!utils.isAdmin(config, userID)) {
     send('Only admins can do that.');
     return;

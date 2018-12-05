@@ -41,21 +41,17 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
 
     switch(command) {
       case 'ping': commands.ping({ send }); break;
-      case 'p':
       case 'points':
       case 'plus':
       case 'add': commands.add({ send, username, userID, message, scores, sheets, sheetID  }); break;
-      case 's':
       case 'sub':
       case 'minus':
       case 'subtract': commands.subtract({ send, username, userID, message, scores, sheets, sheetID  }); break;
-      case 'hs':
       case 'scores':
-      case 'hiscore':
       case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
+      case 'print': commands.leaderboard({ send, sheetID, scores }); break;
       case 'reset':
       case 'archive': commands.archive({ send, config, userID }); break; // TODO
-      case 'h':
       case 'commands':
       case 'help': commands.help({ send }); break;
       case 'reload': {

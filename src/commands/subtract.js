@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 
-export default function subtract({ send, username, userID, message, scores, sheets, sheetID }) {
+export default function subtract({ send, username, userID, message, scores, sheets, sheetID } = {}) {
   if (!message) return;
   const number = parseInt(message, 10);
   if (isNaN(number)) {
