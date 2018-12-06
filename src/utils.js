@@ -80,7 +80,7 @@ export function fetchScores(sheets, sheetID) {
             // Order of sheet columns.
             id: row[0],
             name: row[1],
-            scoreFormula: row[2],
+            scoreFormula: row[2] || '=0',
             score: basicFormulaTransform(row[2]),
           })).reduce((map, user) => {
             map[user.id] = { ...user };
@@ -95,6 +95,8 @@ export function fetchScores(sheets, sheetID) {
 }
 
 function basicFormulaTransform(formula) {
+  if (!formula) return 0;
+
   if (!isNaN(parseInt(formula, 10))) return formula; // Not a formula.
 
   return formula
