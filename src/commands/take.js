@@ -9,7 +9,7 @@ export default function take({ send, config, userID, message, scores, sheets, sh
   if (!message) return;
   const msgPieces = message.split(' ');
   if (msgPieces.length < 2) return;
-  const query = msgPieces.slice(0, msgPieces.length - 1).join(' ');
+  const query = utils.stripName(msgPieces.slice(0, msgPieces.length - 1).join(' '));
   const number = parseInt(msgPieces[msgPieces.length - 1], 10);
 
   if (isNaN(number)) {

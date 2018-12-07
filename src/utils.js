@@ -111,6 +111,16 @@ export function appendFormula(formula, addition) {
   return `${newFormula}+${addition}`;
 }
 
+// @Username#1234 -> Username
+// <502625985365542974> -> 519927985365843988
+export function stripName(name) {
+  return name
+    .replace('@', '')
+    .replace('<', '')
+    .replace('>', '')
+    .slice(0, name.indexOf('#') !== -1 ? name.indexOf('#') - 1 : name.length);
+}
+
 export function getNewGoogleToken(oAuth2Client, callback) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
