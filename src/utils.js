@@ -112,10 +112,11 @@ export function appendFormula(formula, addition) {
 }
 
 // @Username#1234 -> Username
-// <502625985365542974> -> 519927985365843988
+// <!502625985365542974> -> 519927985365843988
 export function stripName(name) {
   return name
     .replace('@', '')
+    .replace('!', '')
     .replace('<', '')
     .replace('>', '')
     .slice(0, name.indexOf('#') !== -1 ? name.indexOf('#') - 1 : name.length);
