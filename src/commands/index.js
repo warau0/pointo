@@ -9,7 +9,8 @@ import take from './take';
 import setSheetID from './setSheetID';
 import setGoogleAuth from './setGoogleAuth';
 import setAdmin from './setAdmin';
-import enterHouse from './enterHouse';
+import houseEnter from './houseEnter';
+import houseAssign from './houseAssign';
 
 export {
   ping,
@@ -23,5 +24,6 @@ export {
   setSheetID,
   setGoogleAuth,
   setAdmin,
-  enterHouse,
+  houseEnter,
+  houseAssign,
 }

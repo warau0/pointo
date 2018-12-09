@@ -56,14 +56,17 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
       case 'minus':
       case 'subtract': commands.subtract({ send, username, userID, message, scores, sheets, sheetID  }); break;
       case 'data':
+      case 'scoreboard':
       case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
       case 'print':
       case 'scores': commands.leaderboard({ send, sheetID, scores }); break;
-      case 'house': commands.enterHouse({ send, username, userID, message, scores, sheets, sheetID }); break;
+      case 'enter':
+      case 'house': commands.houseEnter({ send, username, userID, message, scores, sheets, sheetID }); break;
 
       // Admin
       case 'give': commands.give({ send, config, userID, message, scores, sheets, sheetID }); break;
       case 'take': commands.take({ send, config, userID, message, scores, sheets, sheetID }); break;
+      case 'assign': commands.houseAssign({ send, config, userID, message, scores, sheets, sheetID }); break;
       case 'reset':
       case 'archive': commands.archive({ send, config, userID }); break; // TODO
       case 'sheet': commands.setSheetID({ send, config, userID, message, evt }); break; // TODO
