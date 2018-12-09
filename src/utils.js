@@ -51,11 +51,16 @@ export function saveUser(sheets, sheetID, scores, user) {
     sheets.spreadsheets.values.update({
       spreadsheetId: sheetID,
       valueInputOption: 'USER_ENTERED',
-      range: `Current!A$2:C`,
+      range: `Current!A$2:D`,
       resource: { values: Object.entries(scores)
           .map(item => item[1])
           .sort((a, b) => b.score - a.score)
-          .map(item => { return [item.id, item.name, item.scoreFormula] })
+          .map(item => { return [
+            item.id,
+            item.name,
+            item.scoreFormula,
+            item.house,
+          ] })
       }
     }, cb);
   });
@@ -65,7 +70,7 @@ export function fetchScores(sheets, sheetID) {
   return new Promise((resolve, reject) => {
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetID,
-      range: 'Current!A2:C', // Sheet data selector
+      range: 'Current!A2:D', // Sheet data selector
       valueRenderOption: 'FORMULA',
     }, (err, res) => {
       if (err) {
@@ -82,6 +87,7 @@ export function fetchScores(sheets, sheetID) {
             name: row[1],
             scoreFormula: row[2] || '=0',
             score: basicFormulaTransform(row[2]),
+            house: row[3] || '',
           })).reduce((map, user) => {
             map[user.id] = { ...user };
             return map;
@@ -112,7 +118,7 @@ export function appendFormula(formula, addition) {
 }
 
 // @Username#1234 -> Username
-// <!502625985365542974> -> 519927985365843988
+// <@!502625985365542974> -> 519927985365843988
 export function stripName(name) {
   return name
     .replace('@', '')

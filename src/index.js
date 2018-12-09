@@ -59,12 +59,16 @@ bot.on('message', (username, userID, channelID, fullMessage, evt) => {
       case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
       case 'print':
       case 'scores': commands.leaderboard({ send, sheetID, scores }); break;
+      case 'house': commands.enterHouse({ send, username, userID, message, scores, sheets, sheetID }); break;
 
       // Admin
       case 'give': commands.give({ send, config, userID, message, scores, sheets, sheetID }); break;
       case 'take': commands.take({ send, config, userID, message, scores, sheets, sheetID }); break;
       case 'reset':
       case 'archive': commands.archive({ send, config, userID }); break; // TODO
+      case 'sheet': commands.setSheetID({ send, config, userID, message, evt }); break; // TODO
+      case 'auth': commands.setGoogleAuth({ send, config, userID, message, evt }); break; // TODO
+      case 'admin': commands.setAdmin({ send, config, userID, message, evt }); break; // TODO
 
       case 'reload': {
         utils.fetchScores(sheets, sheetID).then(result => {

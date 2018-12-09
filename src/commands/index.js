@@ -6,6 +6,10 @@ import archive from './archive';
 import help from './help';
 import give from './give';
 import take from './take';
+import setSheetID from './setSheetID';
+import setGoogleAuth from './setGoogleAuth';
+import setAdmin from './setAdmin';
+import enterHouse from './enterHouse';
 
 export {
   ping,
@@ -16,4 +20,8 @@ export {
   help,
   give,
   take,
+  setSheetID,
+  setGoogleAuth,
+  setAdmin,
+  enterHouse,
 }
