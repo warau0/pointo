@@ -1,7 +1,7 @@
 {
   "name": "pointo-bot",
-  "version": "1.0.0",
-  "description": "Discord bot that counts up points",
+  "version": "2.0.0",
+  "description": "Discord bot that can count and some other stuff.",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,19 +18,21 @@
     "basic",
     "math"
   ],
-  "author": "w",
+  "author": "Lars Walter",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/LarsWalter/pointo-bot/issues"
   },
-  "homepage": "https://github.com/LarsWalter/pointo-bot#readme",
+  "homepage": "https://github.com/LarsWalter/pointo-bot",
   "dependencies": {
-    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "^11.4.2",
     "googleapis": "^35.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.1.6",
     "rimraf": "^2.6.2"
   }

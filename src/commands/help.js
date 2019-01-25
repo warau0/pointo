@@ -1,19 +1,30 @@
-export default function help({ send } = {}) {
-  send(
-    ':mega: Commands can be started with \`!\`, \`-\` or \`.\`.\n' +
-    '__Commands:__\n' +
-    '`!ping`: Pong!\n' +
-    '`!help`: List all available commands. Alt: `commands`\n' +
-    '`!add <number>`: Give yourself some points. Alt: `plus`, `points`\n' +
-    '`!sub <number>`: Remove some of your points. Alt: `minus`, `subtract`\n' +
-    '`!house <house name>`: Join a house. Alt: `enter`\n' +
-    '`!leaderboard`: Link to the score spreadsheet. Alt `data`, `scoreboard`\n' +
-    '`!scores`: Print all scores to chat. Alt: `print`\n' +
-    '`!reload`: Reload the spreadsheet data.\n' +
-    '__Admins:__\n' +
-    '`!give <userID/name> <number>`: Give a user some points.\n' +
-    '`!take <userID/name> <number>`: Take some points from a user.\n' +
-    '`!assign <userID/name> <house name>`: Assign a user to a house.'
-    // '`!reset`: Clear all scores. Alt: `archive`'
-  );
-};
+import commands from '../commands';
+import * as constants from '../constants';
+import * as utils from '../utils';
+
+export default function (message) {
+    const guildConfig = GUILD_CONFIGS[message.guild.id];
+    const prefix = guildConfig ? guildConfig.PREFIX : constants.DEFAULT_PREFIX;
+
+    const msg = utils.stripCommand(message);
+    if (msg) {
+        let cmd = commands[msg];
+        if (cmd) {
+            message.channel.send(
+                `\`${prefix}${msg}\`: ${cmd.description}\n` +
+                (cmd.aliases && cmd.aliases.length > 0 ? `Aliases: ${cmd.aliases.map(a => `\`${a}\``).join(', ')}\n` : '') +
+                (cmd.examples && cmd.examples.length > 0 ? `Examples: ${cmd.examples.map(e => `\`${prefix}${e}\``).join(', ')}\n` : '')
+            );
+        } else {
+            message.channel.send(`No such command. Try \`${prefix}help\` for a list of all commands.`);
+        }
+    } else {
+        let msg = ':mega: **Commands**\n';
+        Object.keys(commands).forEach(command => {
+            if (!commands[command].alias)
+                msg += `\`${prefix}${command}\`: ${commands[command].short}\n`;
+        });
+
+        message.channel.send(msg);
+    }
+}

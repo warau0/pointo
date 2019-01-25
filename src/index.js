@@ -1,86 +1,56 @@
-import fs from 'fs';
-import Discord from 'discord.io';
-import { google } from 'googleapis';
+require('@babel/polyfill');
+import Discord from 'discord.js';
 
 import * as utils from './utils';
-import * as commands from './commands';
+import commands from './commands';
+import * as constants from './constants';
 
-let config;
+/**
+ * Global variables:
+ *
+ * CLIENT: Connected Discord websocket client.
+ * CONFIG: Global bot config, has for example Discord API key.
+ * GUILD_CONFIGS: Local bot configs for all connected servers, has for example command prefix.
+ */
+global.CLIENT = new Discord.Client();
+global.CONFIG = {};
+global.GUILD_CONFIGS = {};
+
 try {
-  config = require('../config.json');
+  CONFIG = require('../config.json');
 } catch(e) {
   throw('Error: config.json file does not exist in project root.');
 }
-const sheetID = config.sheetID;
 
-let sheets = {};
-let scores = {};
-
-fs.readFile('credentials.json', (err, content) => {
-  if (err) return console.log('Error loading client secret file:', err);
-  utils.googleAuth(JSON.parse(content), (auth) => {
-    sheets = google.sheets({ version: 'v4', auth });
-    utils.fetchScores(sheets, sheetID).then(result => {
-      scores = result;
-      console.log(`Google connection successful.`)
-    });
-  });
+CLIENT.on('ready', () => {
+  utils.guildsCheck(CLIENT.guilds);
+  CLIENT.user.setActivity('Give me your points!');
+  console.log(`Logged in in as ${CLIENT.user.tag}!`);
+  console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
 });
 
-const bot = new Discord.Client({
-  token: config.discord,
-  autorun: true
+CLIENT.on('guildCreate', guild => {
+  utils.guildCreate(guild);
+  console.log(`New guild: ${guild.name} (id: ${guild.id}), users: ${guild.memberCount}`);
+  console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
 });
 
-/* bot.on('ready', () => {
-  console.log(`Connected as ${bot.username}.`);
-}); */
-
-bot.on('message', (username, userID, channelID, fullMessage, evt) => {
-  if (utils.isCommand(fullMessage)) {
-    console.log(`[${username}] ${fullMessage}`);
-    const args = fullMessage ? fullMessage.substring(1).split(' ') : ['invalid', ''];
-    const command = args[0];
-    const message = args.splice(1).join(' ');
-
-    const send = (msg) => bot.sendMessage({ to: channelID, message: msg });
-
-    switch(command.toLowerCase()) {
-      case 'ping': commands.ping({ send }); break;
-      case 'commands':
-      case 'help': commands.help({ send }); break;
-      case 'points':
-      case 'plus':
-      case 'add': commands.add({ send, username, userID, message, scores, sheets, sheetID  }); break;
-      case 'sub':
-      case 'minus':
-      case 'subtract': commands.subtract({ send, username, userID, message, scores, sheets, sheetID  }); break;
-      case 'data':
-      case 'scoreboard':
-      case 'leaderboard': commands.leaderboard({ send, sheetID }); break;
-      case 'print':
-      case 'scores': commands.leaderboard({ send, sheetID, scores }); break;
-      case 'enter':
-      case 'house': commands.houseEnter({ send, username, userID, message, scores, sheets, sheetID }); break;
-
-      // Admin
-      case 'give': commands.give({ send, config, userID, message, scores, sheets, sheetID }); break;
-      case 'take': commands.take({ send, config, userID, message, scores, sheets, sheetID }); break;
-      case 'assign': commands.houseAssign({ send, config, userID, message, scores, sheets, sheetID }); break;
-      case 'reset':
-      case 'archive': commands.archive({ send, config, userID }); break; // TODO
-      case 'sheet': commands.setSheetID({ send, config, userID, message, evt }); break; // TODO
-      case 'auth': commands.setGoogleAuth({ send, config, userID, message, evt }); break; // TODO
-      case 'admin': commands.setAdmin({ send, config, userID, message, evt }); break; // TODO
-
-      case 'reload': {
-        utils.fetchScores(sheets, sheetID).then(result => {
-          scores = result;
-          send('Leaderboard reloaded. :sparkles:')
-        });
-        break;
-      }
-      default: break;
-    }
-  }
+CLIENT.on('guildDelete', guild => {
+  utils.guildDelete(guild);
+  console.log(`Deleted guild: ${guild.name} (id: ${guild.id})`);
+  console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
 });
+
+CLIENT.on('message', async message => {
+  if (!message.guild) return;
+  if (message.author.bot) return;
+
+  const guildConfig = GUILD_CONFIGS[message.guild.id];
+  const prefix = guildConfig ? guildConfig.PREFIX : constants.DEFAULT_PREFIX;
+  if(!message.content.startsWith(prefix)) return;
+
+  const cmd = commands[message.content.split(' ')[0].slice(prefix.length)];
+  if (cmd) cmd.cmd(message);
+});
+
+CLIENT.login(CONFIG.DISCORD_TOKEN);
