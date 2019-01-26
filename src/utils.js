@@ -48,6 +48,10 @@ export function loadGuildConfigs(guilds) {
         if (GUILD_CONFIGS[guild.id].GOOGLE_TOKEN) {
           // Guild has setup google auth, recreate the connection.
           createGoogleSheetsClient(guild);
+
+          if (GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
+            loadSpreadsheet(guild).then(res => GUILD_TEMP[guild.id].SCORES = res);
+          }
         }
       }
     });
@@ -101,4 +105,55 @@ export function createGoogleSheetsClient(guild) {
   auth.setCredentials(GUILD_CONFIGS[guild.id].GOOGLE_TOKEN);
 
   GUILD_TEMP[guild.id].GOOGLE_SHEETS = google.sheets({ version: 'v4', auth });
+}
+
+export function loadSpreadsheet(guild) {
+  return new Promise((resolve, reject) => {
+    if (GUILD_TEMP[guild.id].GOOGLE_SHEETS
+      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID
+      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
+      GUILD_TEMP[guild.id].GOOGLE_SHEETS.spreadsheets.values.get({
+        spreadsheetId: GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID,
+        range: `${GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME}!A2:D`,
+        valueRenderOption: 'FORMULA',
+      }, (err, res) => {
+        if (err) {
+          reject(err.response && err.response.data && err.response.data.error && err.response.data.error.message
+            ? err.response.data.error.message
+            : 'Google sheets API error.'
+          );
+        } else {
+          const rows = res.data.values;
+          if (rows && rows.length) {
+            resolve(
+              rows.map(row => ({
+                id: row[0],
+                name: row[1],
+                scoreFormula: row[2] || '=0',
+                score: sheetFormulaTransform(row[2]),
+                house: row[3] || '',
+              })).reduce((map, user) => {
+                map[user.id] = { ...user };
+                return map;
+              }, {})
+            );
+          } else {
+            resolve({}); // Empty sheet.
+          }
+        }
+      });
+    } else {
+      reject('Missing Google sheet variables.');
+    }
+  });
+}
+
+export function sheetFormulaTransform(formula) {
+  if (!formula) return 0;
+  if (!isNaN(parseInt(formula, 10))) return formula; // Not a formula.
+
+  return formula
+    .substring(1) // Remove '='.
+    .split('+') // Can only read formulas using nothing but plus.
+    .reduce((add, num) => (add + parseInt(num, 10)), 0); // Sum formula
 }

@@ -1,7 +1,8 @@
 import * as utils from '../utils';
 
 const keys = [
-    'GOOGLE_SHEET_ID'
+    'GOOGLE_SHEET_ID',
+    'GOOGLE_SHEET_NAME'
 ];
 
 export const usage = 'key <key> <value>';
