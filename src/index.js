@@ -11,10 +11,12 @@ import * as constants from './constants';
  * CLIENT: Connected Discord websocket client.
  * CONFIG: Global bot config, has for example Discord API key.
  * GUILD_CONFIGS: Local bot configs for all connected servers, has for example command prefix.
+ * GUILD_TEMP: Guild things that shouldn't be saved to disk, such as Google auth client.
  */
 global.CLIENT = new Discord.Client();
 global.CONFIG = {};
 global.GUILD_CONFIGS = {};
+global.GUILD_TEMP = {};
 
 try {
   CONFIG = require('../config.json');
@@ -23,7 +25,7 @@ try {
 }
 
 CLIENT.on('ready', () => {
-  utils.guildsCheck(CLIENT.guilds);
+  utils.loadGuildConfigs(CLIENT.guilds);
   CLIENT.user.setActivity('Give me your points!');
   console.log(`Logged in in as ${CLIENT.user.tag}!`);
   console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
@@ -45,12 +47,11 @@ CLIENT.on('message', async message => {
   if (!message.guild) return;
   if (message.author.bot) return;
 
-  const guildConfig = GUILD_CONFIGS[message.guild.id];
-  const prefix = guildConfig ? guildConfig.PREFIX : constants.DEFAULT_PREFIX;
-  if(!message.content.startsWith(prefix)) return;
+  const prefix = utils.getPrefix(message);
+  if(!message.content.toLowerCase().startsWith(prefix)) return;
 
-  const cmd = commands[message.content.split(' ')[0].slice(prefix.length)];
-  if (cmd) cmd.cmd(message);
+  const cmd = commands[message.content.split(' ')[0].slice(prefix.length).toLowerCase()];
+  if (cmd) cmd.run(message);
 });
 
 CLIENT.login(CONFIG.DISCORD_TOKEN);

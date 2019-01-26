@@ -1,32 +1,19 @@
-## Feed me points!
+## Give me your points!
 
 ### Setting up:
 
-1. Make a `config.json` file in project root like so:
+1. Make a `config.json` file in project root that looks like this example:
     ```json
-    {
-      "discord": "DISCORD_API_KEY",
-      "google": "GOOGLE_API_KEY",
-      "sheetID": "GOOGLE_SHEET_ID",
-      "admins": [
-        "YOUR_USER_ID",
-        "ANOTHER_ADMINS_USER_ID"
-      ]
-    }
+        {
+            "DISCORD_TOKEN": "NTF54Ti33Ta1OzY1ODQzOeg2.DugcYQ.Oqsr4cbrfm2A8B_kYrOU2b2Obvi",
+            "GOOGLE_CLIENT_ID": "201235522132-12lm7bdba46f21e2i5eadrca2mfjkpf0.apps.googleusercontent.com",
+            "GOOGLE_CLIENT_SECRET": "n_Ej_KZp5oIo2ggo_2d2FFew",
+            "GOOGLE_PROJECT_ID": "pointo-1553760236124"
+        }
     ```
-    - `DISCORD_API_KEY` and `GOOGLE_API_KEY` self explanatory.
-        - Discord key example: `NTE3OYI3OTu1MzYIODQzOTg4.DoncRQ.Uurs4bbrgn2E8A_KyssU8b1Lbea`.
-        - Google key example: `AIxbSyBc2YcARmK3c3vXoSDjuxIgN4zu_KiG_r9`.
-    - `GOOGLE_SHEET_ID` is a google spreadsheet where all the user's points will be stored.
-        - The spreadsheet **must** have a sheet named `Current`.
-        - The sheet ID is in the url. Example: `1dZHVlxlg-BCp0cl2DB9kQH0X5TnSkSdU-A9v_wSDxjw`
-    - `admins` is an array of user id's for people with access to the admin commands.
-        - Important to keep userIDs as strings, as they will overflow as number.
 
-2. Get `credentials.json` file from googleapis after setting up google sheet api and place it in project root.
-
-3. Install dependencies:\
+2. Install dependencies:\
     `yarn`
 
-4. Build and run the bot:\
+3. Build and run the bot:\
     `yarn start`

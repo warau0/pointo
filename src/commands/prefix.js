@@ -1,18 +1,21 @@
-import * as constants from '../constants';
 import * as utils from '../utils';
 
-export default function (message) {
+export const usage = 'prefix <prefix>';
+export const short = 'Check and set command prefix.';
+export const description = `Check the current command prefix or change it to something else.`;
+export const aliases = [];
+export const examples = ['prefix', 'prefix -'];
+
+export function run(message) {
     const msg = utils.stripCommand(message);
     if (msg) {
         utils.guildUpdate(message.guild, {
             ...GUILD_CONFIGS[message.guild.id],
             PREFIX: msg
         });
-        message.channel.send(`Command prefix changed to \`${msg}\`.`);
+        message.channel.send(`:white_check_mark: Command prefix changed to \`${msg}\`.`);
     } else {
-        const guildConfig = GUILD_CONFIGS[message.guild.id];
-        const prefix = guildConfig ? guildConfig.PREFIX : constants.DEFAULT_PREFIX;
-
+        const prefix = utils.getPrefix(message);
         message.channel.send(`Current command prefix: \`${prefix}\`.`);
     }
 }

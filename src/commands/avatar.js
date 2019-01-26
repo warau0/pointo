@@ -1,6 +1,12 @@
 import * as utils from '../utils';
 
-export default function (message) {
+export const usage = 'avatar <user>';
+export const short = 'Get avatar link.';
+export const description = `Get the image used as either your own or someone else's avatar.`;
+export const aliases = [];
+export const examples = ['avatar', 'avatar @warau'];
+
+export function run(message) {
     const msg = utils.stripCommand(message);
     if (msg) {
         const member = message.mentions.members.first() || message.guild.members.get(msg);

@@ -1,0 +1,49 @@
+import * as utils from '../utils';
+
+const keys = [
+    'GOOGLE_SHEET_ID'
+];
+
+export const usage = 'key <key> <value>';
+export const short = 'Set or get a local server variables.';
+export const description = `Give the bot a key value pair local to your server.\n**Valid keys**: ${utils.encodedStringArray(keys)}.`;
+export const aliases = ['var'];
+export const examples = ['key GOOGLE_SHEET_ID', 'key GOOGLE_SHEET_ID 1dZHv5z2f-BcPuc...'];
+
+export function run(message) {
+    const keyValuePair = utils.stripCommand(message).split(' ');
+
+    if (keyValuePair.length === 1 && keyValuePair[0]) {
+        const key = keyValuePair[0].toUpperCase();
+        const value = GUILD_CONFIGS[message.guild.id][key];
+        if (validKey(key)) {
+            if (value) {
+                message.channel.send(`\`${key}\`: ${value}`);
+            } else {
+                message.channel.send(`:x: \`${key}\` has not been set.`);
+            }
+        } else {
+            message.channel.send(`:x: **Invalid key**: Valid keys: ${utils.encodedStringArray(keys)}`);
+        }
+    } else if (keyValuePair.length === 2) {
+        const key = keyValuePair[0].toUpperCase();
+        const value = keyValuePair[1];
+
+        if (validKey(key)) {
+            utils.guildUpdate(message.guild, {
+                ...GUILD_CONFIGS[message.guild.id],
+                [key]: value
+            });
+            message.channel.send(`:white_check_mark: \`${key}\` saved.`);
+        } else {
+            message.channel.send(`:x: **Invalid key**: Valid keys: ${utils.encodedStringArray(keys)}`);
+        }
+    } else {
+        message.channel.send(':x: **Invalid input**: Please check your command. Refer to help command for the correct syntax.');
+    }
+
+}
+
+const validKey = (key) => {
+    return keys.indexOf(key) !== -1;
+}

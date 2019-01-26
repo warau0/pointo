@@ -4,5 +4,3 @@ dist/
 servers/
 
 config.json
-credentials.json
-token.json
