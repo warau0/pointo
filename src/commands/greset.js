@@ -11,8 +11,8 @@ export function run(message) {
         const newConfig = GUILD_CONFIGS[message.guild.id];
         delete newConfig['GOOGLE_TOKEN'];
         utils.guildUpdate(message.guild, newConfig);
-        message.channel.send(`:white_check_mark: Google authentication deleted.`);
+        message.channel.send(utils.formatResponse('pos', '', 'Google authentication deleted.'));
     } else {
-        message.channel.send(`:x: No Google authentication exists.`);
+        message.channel.send(utils.formatResponse('neg', '', 'No Google authentication exists.'));
     }
 }

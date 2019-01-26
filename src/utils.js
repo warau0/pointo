@@ -89,6 +89,11 @@ export function encodedStringArray(array) {
   return array.map(i => `\`${i}\``).join(', ');
 }
 
+export function formatResponse(icon, title = '', text = '') {
+  const icons = { pos: ':white_check_mark:', neg: ':x:' };
+  return `${icons[icon] ? icons[icon] : ''} ${title ? `**${title}**` : ''}${title && text ? ': ' : ''}${text}`;
+}
+
 export function createGoogleSheetsClient(guild) {
   const auth = new google.auth.OAuth2(
     CONFIG.GOOGLE_CLIENT_ID, CONFIG.GOOGLE_CLIENT_SECRET, 'urn:ietf:wg:oauth:2.0:oob',

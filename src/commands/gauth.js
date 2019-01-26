@@ -12,7 +12,7 @@ export function run(message) {
     if (!CONFIG.GOOGLE_CLIENT_ID ||
         !CONFIG.GOOGLE_CLIENT_SECRET ||
         !CONFIG.GOOGLE_PROJECT_ID) {
-            message.channel.send(':x: Bot owner has not set up an OAuth2 client.');
+            message.channel.send(utils.formatResponse('neg', 'No client', 'Bot owner has not set up OAuth2 authentication.'));
             return;
         }
 
@@ -20,24 +20,31 @@ export function run(message) {
     if (msg) {
         if (!!GUILD_TEMP[message.guild.id].GOOGLE_CLIENT) {
             if (GUILD_CONFIGS[message.guild.id].GOOGLE_TOKEN) {
-                message.channel.send(`:x: **Already authenticated**: Please run \`${utils.getPrefix(message)}greset\` if you wish to reauthenticate.`)
+                message.channel.send(utils.formatResponse(
+                    'neg', 'Already authenticated',
+                    `Please run \`${utils.getPrefix(message)}greset\` if you wish to reauthenticate.`
+                ));
             } else {
                 GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.getToken(msg, (err, token) => {
                     if (err) {
-                        message.channel.send(`:x: **Failed authenticating**: please check your code.`);
+                        message.channel.send(utils.formatResponse('neg', 'Failed authenticating', 'Please check your code.'));
                     } else {
                         utils.guildUpdate(message.guild, {
                             ...GUILD_CONFIGS[message.guild.id],
                             GOOGLE_TOKEN: token,
                         });
                         GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.setCredentials(token);
-                        GUILD_TEMP[message.guild.id].GOOGLE_SHEETS = google.sheets({ version: 'v4', auth: GUILD_TEMP[message.guild.id].GOOGLE_CLIENT });
-                        message.channel.send(':white_check_mark: Auth successful!\n');
+                        GUILD_TEMP[message.guild.id].GOOGLE_SHEETS = google.sheets(
+                            { version: 'v4', auth: GUILD_TEMP[message.guild.id].GOOGLE_CLIENT }
+                        );
+                        message.channel.send(utils.formatResponse('pos', '', 'Authentication successful!'));
                     }
                 });
             }
         } else {
-            message.channel.send(`:x: No auth client exists, please run \`${utils.getPrefix(message)}gauth\``);
+            message.channel.send(utils.formatResponse('neg', 'No client',
+                `Please run \`${utils.getPrefix(message)}gauth\` to start authenticating.`)
+            );
         }
     } else {
         GUILD_TEMP[message.guild.id].GOOGLE_CLIENT = new google.auth.OAuth2(

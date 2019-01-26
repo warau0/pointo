@@ -12,14 +12,16 @@ export function run(message) {
         const member = message.mentions.members.first() || message.guild.members.get(msg);
         if (member) {
             message.channel.send(member.user.avatarURL
-                ? `${member.user.username}'s avatar: ${member.user.avatarURL}`
-                : `This user doesn't seem to have an avatar.`);
+                ? utils.formatResponse('', `${member.user.username}'s avatar`, member.user.avatarURL)
+                : utils.formatResponse('neg', `This user has no avatar.`)
+            );
         } else {
-            message.channel.send(`I'm afraid I couldn't find \`${msg}\`. Please use their tag.`);
+            message.channel.send(utils.formatResponse('neg', '', `Couldn't find anyone named \`${msg}\`. Please use their tag.`));
         }
     } else {
         message.channel.send(message.author.avatarURL
-            ? `${message.author.username}'s avatar: __${message.author.avatarURL}__`
-            : `You don't seem to have an avatar set.`);
+            ? utils.formatResponse('', `${message.author.username}'s avatar`, `__${message.author.avatarURL}__`)
+            : utils.formatResponse('neg', `You have no avatar.`)
+        );
     }
 }

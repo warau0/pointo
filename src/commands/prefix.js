@@ -13,7 +13,7 @@ export function run(message) {
             ...GUILD_CONFIGS[message.guild.id],
             PREFIX: msg
         });
-        message.channel.send(`:white_check_mark: Command prefix changed to \`${msg}\`.`);
+        message.channel.send(utils.formatResponse('pos', '', `Command prefix changed to \`${msg}\`.`));
     } else {
         const prefix = utils.getPrefix(message);
         message.channel.send(`Current command prefix: \`${prefix}\`.`);

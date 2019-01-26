@@ -20,10 +20,10 @@ export function run(message) {
             if (value) {
                 message.channel.send(`\`${key}\`: ${value}`);
             } else {
-                message.channel.send(`:x: \`${key}\` has not been set.`);
+                message.channel.send(utils.formatResponse('neg', '', `\`${key}\` has not been set.`));
             }
         } else {
-            message.channel.send(`:x: **Invalid key**: Valid keys: ${utils.encodedStringArray(keys)}`);
+            message.channel.send(utils.formatResponse('neg', 'Invalid key', `Valid keys: ${utils.encodedStringArray(keys)}`));
         }
     } else if (keyValuePair.length === 2) {
         const key = keyValuePair[0].toUpperCase();
@@ -34,12 +34,14 @@ export function run(message) {
                 ...GUILD_CONFIGS[message.guild.id],
                 [key]: value
             });
-            message.channel.send(`:white_check_mark: \`${key}\` saved.`);
+            message.channel.send(utils.formatResponse('pos', '', `\`${key}\` saved.`));
         } else {
-            message.channel.send(`:x: **Invalid key**: Valid keys: ${utils.encodedStringArray(keys)}`);
+            message.channel.send(utils.formatResponse('pos', '', `\`${key}\` saved.`));
+            message.channel.send(utils.formatResponse('neg', 'Invalid key', `Valid keys: ${utils.encodedStringArray(keys)}`));
         }
     } else {
-        message.channel.send(':x: **Invalid input**: Please check your command. Refer to help command for the correct syntax.');
+        message.channel.send(utils.formatResponse('neg', 'Invalid input',
+            'Please check your command. Refer to help command for the correct syntax.'));
     }
 
 }
