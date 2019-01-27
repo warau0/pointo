@@ -27,7 +27,7 @@ export function run(message) {
     const userRow = utils.getUserPointsRow(message.guild, user);
     const number = parseInt(msgSplit[1], 10);
     if (isNaN(number)) {
-        return message.channel.send(utils.formatResponse('neg', 'Failed', `\`${msg}\` isn't a number!`));
+        return message.channel.send(utils.formatResponse('neg', '', `\`${msg}\` isn't a number.`));
     }
 
     const newPoints = number > userRow.points ? 0 : userRow.points - number;
@@ -38,6 +38,6 @@ export function run(message) {
     GUILD_TEMP[message.guild.id].POINTS[user.id] = userRow;
     utils.updateSpreadsheet(message.guild)
     .then(() => message.channel.send(utils.formatResponse('pos', '',
-        `${user.username}: **-${number}**! Total: **${userRow.points}**`)))
+        `${user.username}: **-${number}**! Total: **${userRow.points}**.`)))
     .catch(err =>  message.channel.send(utils.formatResponse('neg', 'Failed saving', err)));
 }

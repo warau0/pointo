@@ -14,10 +14,9 @@ const mkdirSync = function (dirPath) {
 
 export function guildCreate(guild) {
   const emptyConfig = {
+    ...constants.EMPTY_GUILD_CONFIG,
     ID: guild.id,
     NAME: guild.name,
-    PREFIX: null,
-    ADMINS: [],
   };
   mkdirSync(path.resolve('./servers'));
   guildUpdate(guild, emptyConfig);
@@ -36,15 +35,15 @@ export function loadGuildConfigs(guilds) {
       if (err) {
         // Joined a guild while offline.
         const emptyConfig = {
+          ...constants.EMPTY_GUILD_CONFIG,
           ID: guild.id,
           NAME: guild.name,
-          PREFIX: null,
-          ADMINS: [],
         };
         guildUpdate(guild, emptyConfig);
         GUILD_TEMP[guild.id] = {};
       } else {
         GUILD_CONFIGS[guild.id] = JSON.parse(data);
+        // TODO Check for missing properties from empty config preset and add them.
         GUILD_TEMP[guild.id] = {};
 
         if (GUILD_CONFIGS[guild.id].GOOGLE_TOKEN) {

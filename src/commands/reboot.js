@@ -5,8 +5,8 @@ import { exec } from 'child_process';
 import * as utils from '../utils';
 
 export const usage = 'reboot';
-export const short = 'Reboot the bot.';
-export const description = `Kills the bot process and hopes pm2 restarts it.`;
+export const short = 'Update and reboot the bot.';
+export const description = `Checks for updates, rebuilds the project and finally kills the bot process with hopes of pm2 restarting it.`;
 export const aliases = ['boot', 'restart', 'kill'];
 export const examples = [];
 export const group = 'utlity';

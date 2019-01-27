@@ -12,7 +12,7 @@ export function run(message) {
 
     if (!member) {
         if (GUILD_CONFIGS[message.guild.id].ADMINS.length) {
-            return message.channel.send(`**Admins**: ${GUILD_CONFIGS[message.guild.id].ADMINS.map(member =>
+            return message.channel.send(`:triangular_flag_on_post: **Admins:**\n${GUILD_CONFIGS[message.guild.id].ADMINS.map(member =>
                 `\`${message.guild.members.get(member).user.username}\``).join(' **|** ')}`);
         }
         return message.channel.send(utils.formatResponse('neg', '', 'There are no admins.'));
@@ -25,12 +25,12 @@ export function run(message) {
             ...GUILD_CONFIGS[message.guild.id],
             ADMINS: GUILD_CONFIGS[message.guild.id].ADMINS.filter(i => i !== member.id),
         });
-        message.channel.send(utils.formatResponse('pos', '', `${member.user.username} is no longer an admin!`));
+        message.channel.send(utils.formatResponse('pos', '', `**${member.user.username}** is no longer an admin.`));
     } else {
         utils.guildUpdate(message.guild, {
             ...GUILD_CONFIGS[message.guild.id],
             ADMINS: [...GUILD_CONFIGS[message.guild.id].ADMINS, member.id],
         });
-        message.channel.send(utils.formatResponse('pos', '', `${member.user.username} added to admins!`));
+        message.channel.send(utils.formatResponse('pos', '', `**${member.user.username}** added to admins.`));
     }
 }

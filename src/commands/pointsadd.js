@@ -1,7 +1,7 @@
 import * as utils from '../utils';
 
 export const usage = 'pointsadd <number>';
-export const short = 'Add or view your points.';
+export const short = 'Add / view your own points.';
 export const description = `Give yourself some points or check how many you have.`;
 export const aliases = ['points', 'add'];
 export const examples = ['pointsadd', 'pointsadd 5'];
@@ -12,12 +12,12 @@ export function run(message) {
     const userRow = utils.getUserPointsRow(message.guild, message.author);
 
     if (!msg || msg === '0') {
-        return message.channel.send(`You have **${userRow.points}** points, ${message.author.username}!`);
+        return message.channel.send(`You have **${userRow.points}** points, ${message.author.username}.`);
     }
 
     const number = parseInt(msg, 10);
     if (isNaN(number)) {
-        return message.channel.send(utils.formatResponse('neg', 'Failed', `\`${msg}\` isn't a number!`));
+        return message.channel.send(utils.formatResponse('neg', '', `\`${msg}\` isn't a number.`));
     }
 
     userRow.name = message.author.username;
@@ -27,6 +27,6 @@ export function run(message) {
     GUILD_TEMP[message.guild.id].POINTS[message.author.id] = userRow;
     utils.updateSpreadsheet(message.guild)
     .then(() => message.channel.send(utils.formatResponse('pos', '',
-        `${message.author.username}: **+${number}**! Total: **${userRow.points}**`)))
+        `${message.author.username}: **+${number}**! Total: **${userRow.points}**.`)))
     .catch(err =>  message.channel.send(utils.formatResponse('neg', 'Failed saving', err)));
 }

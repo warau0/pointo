@@ -13,6 +13,8 @@ import * as pointssub from './commands/pointssub';
 import * as pointstake from './commands/pointstake';
 import * as prefix from './commands/prefix';
 import * as reboot from './commands/reboot';
+import * as roleedit from './commands/roleedit';
+import * as roletoggle from './commands/roletoggle';
 import * as source from './commands/source';
 import * as stats from './commands/stats';
 import * as uinfo from './commands/uinfo';
@@ -31,7 +33,9 @@ export default utils.extractAliases({
     pointstake,
     prefix,
     reboot,
+    roleedit,
+    roletoggle,
     source,
     stats,
     uinfo,
-})
+});
