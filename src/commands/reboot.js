@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { exec } from 'child_process';
 
 import * as utils from '../utils';
 
@@ -13,11 +14,21 @@ export const group = 'utlity';
 export async function run(message) {
     if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
 
-    const msg = await message.channel.send('Rebooting...');
-    fs.writeFile(path.resolve('./reboot.json'), JSON.stringify({
-        channel: msg.channel.id,
-        time: +new Date(),
-    }), () => {
-        process.exit(1);
+    const msg = await message.channel.send('Checking for updates ...');
+    exec('git pull', async err => {
+        if (!err) {
+            await msg.edit('Building ...');
+            exec('yarn build', async err => {
+                if (!err) {
+                    await msg.edit('Rebooting ...');
+                    fs.writeFile(path.resolve('./reboot.json'), JSON.stringify({
+                        channel: msg.channel.id,
+                        time: +new Date(),
+                    }), () => {
+                        process.exit(1);
+                    });
+                }
+            })
+        }
     });
 }
