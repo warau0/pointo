@@ -1,7 +1,7 @@
 import * as utils from '../utils';
 
 export const usage = 'prefix <prefix>';
-export const short = 'Get or set command prefix.';
+export const short = 'Get / set command prefix.';
 export const description = `Check the current command prefix or change it to something else.`;
 export const aliases = [];
 export const examples = ['prefix', 'prefix -'];
