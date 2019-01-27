@@ -1,5 +1,3 @@
-import Discord from 'discord.js';
-
 export const usage = 'stats';
 export const short = 'General bot statistics.';
 export const description = `Check if the bot is responsive and get some general statistics.`;

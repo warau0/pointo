@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import * as utils from '../utils';
+
 export const usage = 'reboot';
 export const short = 'Reboot the bot.';
 export const description = `Kills the bot process and hopes pm2 restarts it.`;
