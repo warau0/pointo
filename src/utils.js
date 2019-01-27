@@ -246,7 +246,12 @@ export function checkGuildConfig(guild) {
   }
 }
 
+export function twitchStatusChange(request) {
+  console.log('Webhook hit, stream changed status');
+}
+
 export function createWebHooks(streamers) {
+  const webhooks = 0;
   streamers.forEach(streamer => {
     request({
       method: 'POST',
@@ -258,19 +263,26 @@ export function createWebHooks(streamers) {
         'hub.mode': 'subscribe',
         'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${streamer.split('::')[1]}`,
         'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.TWITCH_WEBHOOKS_PORT}/twitch`,
-        'hub.lease_seconds': 0, // FIXME
+        'hub.lease_seconds': 86400 * 2, // 2 days while testing, up to 10 days later.
+        // TODO Create a timeout refreshing webhook if bot is still up when lease expires.
       },
     }, (err, res) => {
       if (err) { return console.log(err); }
-      console.log(res.statusCode + ' :: Created Twitch webhook for ' + streamer);
+      if (res.statusCode === 202) {
+        webhooks += 1;
+      }
     });
   });
+
+  if (webhooks > 0) {
+    console.log(`Created ${webhooks} Twitch webhooks.`);
+  }
 }
 
 export function removeWebHook(streamer) {
-
+  // TODO Unsubscribe from a single Twitch webhook.
 }
 
 export function destroyWebHooks() {
-
+  // TODO Unsubscribe from all Twitch webhooks.
 }

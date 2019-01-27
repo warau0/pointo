@@ -58,10 +58,13 @@ CLIENT.on('message', async message => {
 CLIENT.login(CONFIG.DISCORD_TOKEN);
 
 app.get('/twitch', function (req, res) {
-  console.log(req.body);
-  console.log('body', req.body);
-  console.log('hit webhook');
-  res.send('Hello Twitch');
+  if (!req.query['hub.challenge']) {
+    utils.twitchStatusChange(req);
+  } else {
+    console.log('Webhook challenge hit.');
+  }
+
+  res.send(req.query['hub.challenge'] ? req.query['hub.challenge'] : 'No challenge!');
 });
 
 app.listen(CONFIG.TWITCH_WEBHOOKS_PORT, () => console.log(`Twitch webhooks listening on port ${CONFIG.TWITCH_WEBHOOKS_PORT}`));
