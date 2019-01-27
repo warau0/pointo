@@ -5,6 +5,7 @@ export const short = 'Add or view your points.';
 export const description = `Give yourself some points or check how many you have.`;
 export const aliases = ['points', 'add'];
 export const examples = ['pointsadd', 'pointsadd 5'];
+export const group = 'points';
 
 export function run(message) {
     const msg = utils.stripCommand(message);

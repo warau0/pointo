@@ -3,8 +3,9 @@ import * as utils from '../utils';
 export const usage = 'greload';
 export const short = 'Reload Google sheet.';
 export const description = 'Reload the spreadsheet data. Use this if you manually edit the spreadsheet.';
-export const aliases = ['googlereload'];
+export const aliases = ['googlereload', 'reload'];
 export const examples = [];
+export const group = 'settings';
 
 export function run(message) {
     if (!GUILD_CONFIGS[message.guild.id].GOOGLE_TOKEN) {

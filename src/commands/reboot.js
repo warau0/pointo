@@ -6,6 +6,7 @@ export const short = 'Reboot the bot.';
 export const description = `Kills the bot process and hopes pm2 restarts it.`;
 export const aliases = ['boot', 'restart', 'kill'];
 export const examples = [];
+export const group = 'utlity';
 
 export async function run(message) {
     const msg = await message.channel.send('Rebooting...');

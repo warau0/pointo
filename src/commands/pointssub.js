@@ -5,6 +5,7 @@ export const short = 'Remove or view points.';
 export const description = `Remove some of your own points or check how many you have.`;
 export const aliases = ['sub', 'minus', 'subtract'];
 export const examples = ['pointssub 5'];
+export const group = 'points';
 
 export function run(message) {
     const msg = utils.stripCommand(message);

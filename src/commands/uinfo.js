@@ -7,11 +7,12 @@ export const short = 'Info about a user.';
 export const description = `Get some general info about a user or yourself.`;
 export const aliases = ['user', 'avatar'];
 export const examples = ['uinfo', 'uinfo @warau'];
+export const group = 'utlity';
 
 export function run(message) {
     const msg = utils.stripCommand(message);
-    let member = msg ? (message.mentions.members.first() || message.guild.members.get(msg))
-        : message.guild.members.find(member => member.user.id === message.author.id)
+    let member = msg ? message.mentions.members.first()
+        : message.guild.members.find(member => member.user.id === message.author.id);
 
     message.channel.send({ embed: new Discord.RichEmbed()
         .setColor('#000000'.replace(/0/g, () => (~~(Math.random() * 16)).toString(16)))

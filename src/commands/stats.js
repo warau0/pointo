@@ -1,10 +1,11 @@
 import Discord from 'discord.js';
 
-export const usage = 'ping';
-export const short = 'Anybody home?';
-export const description = `Check if the bot is responsive and get some statistics.`;
-export const aliases = ['stats'];
+export const usage = 'stats';
+export const short = 'General bot statistics.';
+export const description = `Check if the bot is responsive and get some general statistics.`;
+export const aliases = ['ping'];
 export const examples = [];
+export const group = 'utlity';
 
 export async function run(message) {
     const upS = Math.floor(CLIENT.uptime / 1000).toString().padStart(2, '0');

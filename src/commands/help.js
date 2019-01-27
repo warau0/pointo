@@ -6,6 +6,7 @@ export const short = 'Command list and help.';
 export const description = `List the total list of commands or get specifics on a single command.`;
 export const aliases = ['h'];
 export const examples = ['help', 'help prefix'];
+export const group = 'utlity';
 
 export function run(message) {
     const prefix = utils.getPrefix(message);
@@ -24,9 +25,21 @@ export function run(message) {
         }
     } else {
         let msg = ':mega: **Commands**\n';
+        const groups = {};
         Object.keys(commands).forEach(command => {
-            if (!commands[command].alias)
+            if (!commands[command].alias) {
+                if (!groups[commands[command].group]) {
+                    groups[commands[command].group] = {};
+                }
+                groups[commands[command].group][command] = commands[command];
+            }
+        });
+
+        Object.keys(groups).forEach(group => {
+            msg += `**${group}**:\n`;
+            Object.keys(groups[group]).forEach(command => {
                 msg += `\`${prefix}${command}\`: ${commands[command].short}\n`;
+            });
         });
 
         message.channel.send(msg);

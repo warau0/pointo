@@ -6,10 +6,11 @@ const keys = [
 ];
 
 export const usage = 'key <key> <value>';
-export const short = 'Set or get a local server variables.';
+export const short = 'Key or set local server variables.';
 export const description = `Give the bot a key value pair local to your server.\n**Valid keys**: ${utils.encodedStringArray(keys)}.`;
 export const aliases = ['var'];
 export const examples = ['key GOOGLE_SHEET_ID', 'key GOOGLE_SHEET_ID 1dZHv5z2f-BcPuc...'];
+export const group = 'settings';
 
 export function run(message) {
     const keyValuePair = utils.stripCommand(message).split(' ');
