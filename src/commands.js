@@ -1,6 +1,5 @@
 import * as utils from './utils';
 
-import * as avatar from './commands/avatar';
 import * as gauth from './commands/gauth';
 import * as greload from './commands/greload';
 import * as greset from './commands/greset';
@@ -13,9 +12,9 @@ import * as pointssub from './commands/pointssub';
 import * as prefix from './commands/prefix';
 import * as reboot from './commands/reboot';
 import * as source from './commands/source';
+import * as uinfo from './commands/uinfo';
 
 export default utils.extractAliases({
-    avatar,
     gauth,
     greload,
     greset,
@@ -28,4 +27,5 @@ export default utils.extractAliases({
     prefix,
     reboot,
     source,
+    uinfo,
 })
