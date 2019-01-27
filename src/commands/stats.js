@@ -6,10 +6,10 @@ export const examples = [];
 export const group = 'utlity';
 
 export async function run(message) {
-    const upS = Math.ceil((CLIENT.uptime * 1000) % 60).toString().padStart(2, '0');
-    const upM = Math.floor(((CLIENT.uptime * 1000) % (60 * 60)) / 60).toString().padStart(2, '0');
-    const upH = Math.floor(((CLIENT.uptime * 1000) % (60 * 60 * 24)) / (60 * 60)).toString().padStart(2, '0');
-    const upD = Math.floor((CLIENT.uptime * 1000) / (60 * 60 * 24));
+    const upS = Math.ceil((CLIENT.uptime / 1000) % 60).toString().padStart(2, '0');
+    const upM = Math.floor(((CLIENT.uptime / 1000) % (60 * 60)) / 60).toString().padStart(2, '0');
+    const upH = Math.floor(((CLIENT.uptime / 1000) % (60 * 60 * 24)) / (60 * 60)).toString().padStart(2, '0');
+    const upD = Math.floor((CLIENT.uptime / 1000) / (60 * 60 * 24));
 
     const msg = await message.channel.send('Statistics\n==========', { code: 'asciidoc' });
     msg.edit(`
