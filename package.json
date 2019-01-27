@@ -26,6 +26,7 @@
   "homepage": "https://github.com/LarsWalter/pointo-bot",
   "dependencies": {
     "discord.js": "^11.4.2",
+    "express": "^4.16.4",
     "googleapis": "^36.0.0",
     "request": "^2.88.0"
   },
