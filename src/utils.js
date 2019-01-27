@@ -251,7 +251,7 @@ export function twitchStatusChange(request) {
 }
 
 export function createWebHooks(streamers) {
-  const webhooks = 0;
+  let webhooks = 0;
   streamers.forEach(streamer => {
     request({
       method: 'POST',
