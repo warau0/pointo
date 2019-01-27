@@ -15,10 +15,12 @@
 1. Make a `config.json` file in project root that looks like this example:
     ```json
         {
+            "HOST_URI": "http://82.120.11.72",
             "DISCORD_TOKEN": "NTF54Ti33Ta1OzY1ODQzOeg2.DugcYQ.Oqsr4cbrfm2A8B_kYrOU2b2Obvi",
             "GOOGLE_CLIENT_ID": "201235522132-12lm7bdba46f21e2i5eadrca2mfjkpf0.apps.googleusercontent.com",
             "GOOGLE_CLIENT_SECRET": "n_Ej_KZp5oIo2ggo_2d2FFew",
-            "GOOGLE_PROJECT_ID": "pointo-1553760236124"
+            "GOOGLE_PROJECT_ID": "pointo-1553760236124",
+            "TWITCH_CLIENT_ID": "yuth9hdd21zzs2vev2yo84wxy21rop"
         }
     ```
 

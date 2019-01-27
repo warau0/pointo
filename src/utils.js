@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { google } from 'googleapis';
+import request from 'request';
 
 import * as constants from './constants';
 
@@ -43,7 +44,7 @@ export function loadGuildConfigs(guilds) {
         GUILD_TEMP[guild.id] = {};
       } else {
         GUILD_CONFIGS[guild.id] = JSON.parse(data);
-        // TODO Check for missing properties from empty config preset and add them.
+        checkGuildConfig(guild);
         GUILD_TEMP[guild.id] = {};
 
         if (GUILD_CONFIGS[guild.id].GOOGLE_TOKEN) {
@@ -53,6 +54,11 @@ export function loadGuildConfigs(guilds) {
           if (GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
             loadSpreadsheet(guild).then(res => GUILD_TEMP[guild.id].POINTS = res);
           }
+        }
+
+        if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length) {
+          // Guild has set up twitch stream watchers.
+          createWebHooks(GUILD_CONFIGS[guild.id].TWITCH_STREAMS);
         }
       }
     });
@@ -224,4 +230,47 @@ export function checkReboot() {
 export function isAdmin(message) {
   if (!GUILD_CONFIGS[message.guild.id].ADMINS.length) return true;
   return GUILD_CONFIGS[message.guild.id].ADMINS.indexOf(message.author.id) !== -1;
+}
+
+export function checkGuildConfig(guild) {
+  let changed = false;
+  Object.keys(constants.EMPTY_GUILD_CONFIG).forEach(prop => {
+    if (typeof GUILD_CONFIGS[guild.id][prop] === 'undefined') {
+      changed = true;
+      GUILD_CONFIGS[guild.id][prop] = constants.EMPTY_GUILD_CONFIG[prop];
+    }
+  });
+
+  if (changed) {
+    guildUpdate(guild, GUILD_CONFIGS[guild.id]);
+  }
+}
+
+export function createWebHooks(streamers) {
+  streamers.forEach(streamer => {
+    request({
+      method: 'POST',
+      uri: `https://api.twitch.tv/helix/webhooks/hub`,
+      headers: {
+        'Client-ID': CONFIG.TWITCH_CLIENT_ID,
+      },
+      json: {
+        'hub.mode': 'subscribe',
+        'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${streamer.split('::')[1]}`,
+        'hub.callback': `${CONFIG.HOST_URI}:8181/twitch`,
+        'hub.lease_seconds': 0, // FIXME
+      },
+    }, err => {
+      if (err) { return console.log(err); }
+      console.log('Created Twitch webhook for ' + streamer.split('::')[0]);
+    });
+  });
+}
+
+export function removeWebHook(streamer) {
+
+}
+
+export function destroyWebHooks() {
+
 }

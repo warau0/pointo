@@ -1,3 +1,5 @@
+const pkg = require('../../package.json');
+
 export const usage = 'stats';
 export const short = 'General bot statistics.';
 export const description = `Check if the bot is responsive and get some general statistics.`;
@@ -15,6 +17,7 @@ export async function run(message) {
     msg.edit(`
 Statistics
 ==========
+- Version      -  v${pkg.version}
 - Uptime       -  ${upD} day${upD != 1 ? 's' : ''}, ${upH}:${upM}:${upS}
 - Latency      -  ${msg.createdTimestamp - message.createdTimestamp} ms
 - API Latency  -  ${Math.round(CLIENT.ping)} ms

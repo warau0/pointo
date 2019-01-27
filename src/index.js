@@ -1,9 +1,11 @@
 require('@babel/polyfill');
 import Discord from 'discord.js';
+const express = require('express');
+
+const app = express();
 
 import * as utils from './utils';
 import commands from './commands';
-import * as constants from './constants';
 
 /**
  * Global variables:
@@ -56,3 +58,17 @@ CLIENT.on('message', async message => {
 });
 
 CLIENT.login(CONFIG.DISCORD_TOKEN);
+
+app.get('/twitch', function (req, res) {
+  console.log('get webhook hit', req);
+  res.send('hello world')
+});
+app.post('/twitch', function (req, res) {
+  console.log('post webhook hit', req);
+  res.send('hello world')
+});
+
+process.on('SIGINT', () => {
+  utils.destroyWebHooks();
+  process.exit(0);
+});

@@ -5,4 +5,5 @@ export const EMPTY_GUILD_CONFIG = {
     PREFIX: null,
     ADMINS: [],
     SELF_ROLES: [],
+    TWITCH_STREAMS: [],
 };
