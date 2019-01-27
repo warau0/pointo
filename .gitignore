@@ -4,3 +4,4 @@ dist/
 servers/
 
 config.json
+reboot.json

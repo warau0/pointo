@@ -11,6 +11,7 @@ import * as ping from './commands/ping';
 import * as pointsadd from './commands/pointsadd';
 import * as pointssub from './commands/pointssub';
 import * as prefix from './commands/prefix';
+import * as reboot from './commands/reboot';
 import * as source from './commands/source';
 
 export default utils.extractAliases({
@@ -25,5 +26,6 @@ export default utils.extractAliases({
     pointsadd,
     pointssub,
     prefix,
+    reboot,
     source,
 })

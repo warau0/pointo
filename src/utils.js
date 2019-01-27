@@ -7,7 +7,7 @@ import * as constants from './constants';
 const mkdirSync = function (dirPath) {
   try {
     fs.mkdirSync(dirPath)
-  } catch (err) {
+  } catch(err) {
     if (err.code !== 'EEXIST') throw err
   }
 }
@@ -208,4 +208,14 @@ export function getUserPointsRow(guild, user) {
     points: 0,
     pointsFormula: '=0',
   };
+}
+
+export function checkReboot() {
+  try {
+    const { channel: channelID, time } = JSON.parse(fs.readFileSync('./reboot.json'));
+    CLIENT.channels.get(channelID).send(`Rebooted! (took ${parseFloat((new Date() - time) / 1000).toFixed(2)}s)`);
+    fs.unlink('./reboot.json', () => {});
+  } catch(_) {
+    fs.unlink('./reboot.json', () => {});
+  }
 }

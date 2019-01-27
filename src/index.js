@@ -25,6 +25,7 @@ try {
 }
 
 CLIENT.on('ready', () => {
+  utils.checkReboot();
   utils.loadGuildConfigs(CLIENT.guilds);
   CLIENT.user.setActivity('Give me your points!');
   console.log(`Logged in in as ${CLIENT.user.tag}!`);
