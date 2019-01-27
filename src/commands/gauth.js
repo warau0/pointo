@@ -5,11 +5,13 @@ import * as utils from '../utils';
 export const usage = 'gauth <code>';
 export const short = 'Authenticate with Google.';
 export const description = 'Authenticate a Google accounnt with the bot. Required before using a google Sheet.';
-export const aliases = ['googleauth'];
+export const aliases = ['googleauth', 'auth'];
 export const examples = ['gauth', 'gauth 3/4gBP2D8QhvcESmz...'];
 export const group = 'settings';
 
 export function run(message) {
+    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+
     if (!CONFIG.GOOGLE_CLIENT_ID ||
         !CONFIG.GOOGLE_CLIENT_SECRET ||
         !CONFIG.GOOGLE_PROJECT_ID) {

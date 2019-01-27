@@ -14,9 +14,10 @@ const mkdirSync = function (dirPath) {
 
 export function guildCreate(guild) {
   const emptyConfig = {
-    id: guild.id,
-    name: guild.name,
-    prefix: null,
+    ID: guild.id,
+    NAME: guild.name,
+    PREFIX: null,
+    ADMINS: [],
   };
   mkdirSync(path.resolve('./servers'));
   guildUpdate(guild, emptyConfig);
@@ -38,6 +39,7 @@ export function loadGuildConfigs(guilds) {
           ID: guild.id,
           NAME: guild.name,
           PREFIX: null,
+          ADMINS: [],
         };
         guildUpdate(guild, emptyConfig);
         GUILD_TEMP[guild.id] = {};
@@ -218,4 +220,9 @@ export function checkReboot() {
   } catch(_) {
     fs.unlink('./reboot.json', () => {});
   }
+}
+
+export function isAdmin(message) {
+  if (!GUILD_CONFIGS[message.guild.id].ADMINS.length) return true;
+  return GUILD_CONFIGS[message.guild.id].ADMINS.indexOf(message.author.id) !== -1;
 }

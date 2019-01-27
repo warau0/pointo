@@ -8,6 +8,8 @@ export const examples = ['pointstake @warau 5'];
 export const group = 'points';
 
 export function run(message) {
+    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+
     const msg = utils.stripCommand(message);
     const msgSplit = msg.split(' ');
 

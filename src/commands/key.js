@@ -13,6 +13,8 @@ export const examples = ['key GOOGLE_SHEET_ID', 'key GOOGLE_SHEET_ID 1dZHv5z2f-B
 export const group = 'settings';
 
 export function run(message) {
+    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+
     const keyValuePair = utils.stripCommand(message).split(' ');
 
     if (keyValuePair.length === 1 && keyValuePair[0]) {

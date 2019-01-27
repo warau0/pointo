@@ -9,6 +9,8 @@ export const examples = [];
 export const group = 'utlity';
 
 export async function run(message) {
+    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+
     const msg = await message.channel.send('Rebooting...');
     fs.writeFile(path.resolve('./reboot.json'), JSON.stringify({
         channel: msg.channel.id,

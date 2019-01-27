@@ -8,6 +8,8 @@ export const examples = ['prefix', 'prefix -'];
 export const group = 'settings';
 
 export function run(message) {
+    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+
     const msg = utils.stripCommand(message);
     if (msg) {
         utils.guildUpdate(message.guild, {

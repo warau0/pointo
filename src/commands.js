@@ -1,5 +1,7 @@
 import * as utils from './utils';
 
+import * as adminadd from './commands/adminadd';
+import * as admindel from './commands/admindel';
 import * as gauth from './commands/gauth';
 import * as greload from './commands/greload';
 import * as greset from './commands/greset';
@@ -17,6 +19,8 @@ import * as stats from './commands/stats';
 import * as uinfo from './commands/uinfo';
 
 export default utils.extractAliases({
+    adminadd,
+    admindel,
     gauth,
     greload,
     greset,
