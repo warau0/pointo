@@ -1,6 +1,16 @@
 ## Give me your points!
 
-### Setting up:
+### Adding the bot to your server:
+1. Add to server from https://discordapp.com/api/oauth2/authorize?client_id=518608155907719168&permissions=0&scope=bot
+
+2. Familiarize yourself with the commands using `p!help`.
+
+3. Add yourself and other any other users you want as admins with `p!admin <user>`.
+
+4. Set up google variables and auth with the commands `p!key <key> <value>` and `p!gauth`.
+
+
+### Setting up your own instance:
 
 1. Make a `config.json` file in project root that looks like this example:
     ```json
