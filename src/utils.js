@@ -257,7 +257,7 @@ export function createWebHooks(streamers) {
       json: {
         'hub.mode': 'subscribe',
         'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${streamer.split('::')[1]}`,
-        'hub.callback': `${CONFIG.HOST_URI}:8181/twitch`,
+        'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.TWITCH_WEBHOOKS_PORT}/twitch`,
         'hub.lease_seconds': 0, // FIXME
       },
     }, err => {

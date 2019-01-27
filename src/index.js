@@ -1,8 +1,6 @@
 require('@babel/polyfill');
 import Discord from 'discord.js';
-const express = require('express');
-
-const app = express();
+const app = require('express')();
 
 import * as utils from './utils';
 import commands from './commands';
@@ -67,6 +65,8 @@ app.post('/twitch', function (req, res) {
   console.log('post webhook hit', req);
   res.send('hello world')
 });
+
+app.listen(CONFIG.TWITCH_WEBHOOKS_PORT, () => console.log(`Twitch webhooks listening on port ${CONFIG.TWITCH_WEBHOOKS_PORT}`));
 
 process.on('SIGINT', () => {
   utils.destroyWebHooks();
