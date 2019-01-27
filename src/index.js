@@ -58,12 +58,10 @@ CLIENT.on('message', async message => {
 CLIENT.login(CONFIG.DISCORD_TOKEN);
 
 app.get('/twitch', function (req, res) {
-  console.log('get webhook hit', req);
-  res.send('hello world')
-});
-app.post('/twitch', function (req, res) {
-  console.log('post webhook hit', req);
-  res.send('hello world')
+  console.log(req.body);
+  console.log('body', req.body);
+  console.log('hit webhook');
+  res.send('Hello Twitch');
 });
 
 app.listen(CONFIG.TWITCH_WEBHOOKS_PORT, () => console.log(`Twitch webhooks listening on port ${CONFIG.TWITCH_WEBHOOKS_PORT}`));

@@ -260,9 +260,9 @@ export function createWebHooks(streamers) {
         'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.TWITCH_WEBHOOKS_PORT}/twitch`,
         'hub.lease_seconds': 0, // FIXME
       },
-    }, err => {
+    }, (err, res) => {
       if (err) { return console.log(err); }
-      console.log('Created Twitch webhook for ' + streamer.split('::')[0]);
+      console.log(res.statusCode + ' :: Created Twitch webhook for ' + streamer);
     });
   });
 }
