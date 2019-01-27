@@ -37,12 +37,11 @@ export function run(message) {
             });
             message.channel.send(utils.formatResponse('pos', '', `\`${key}\` saved.`));
         } else {
-            message.channel.send(utils.formatResponse('pos', '', `\`${key}\` saved.`));
             message.channel.send(utils.formatResponse('neg', 'Invalid key', `Valid keys: ${utils.encodedStringArray(keys)}`));
         }
     } else {
         message.channel.send(utils.formatResponse('neg', 'Invalid input',
-            'Please check your command. Refer to help command for the correct syntax.'));
+            `Please check your command. Refer to \`${utils.getPrefix(message)}help\` for the correct syntax.`));
     }
 
 }

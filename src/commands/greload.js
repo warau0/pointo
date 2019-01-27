@@ -14,12 +14,10 @@ export function run(message) {
 
     if (GUILD_CONFIGS[message.guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[message.guild.id].GOOGLE_SHEET_NAME) {
         utils.loadSpreadsheet(message.guild).then(res => {
-            GUILD_TEMP[message.guild.id].SCORES = res;
-            message.channel.send('Scores reloaded. :sparkles:');
+            GUILD_TEMP[message.guild.id].POINTS = res;
+            message.channel.send('Points reloaded. :sparkles:');
         })
-        .catch(err => {
-            message.channel.send(utils.formatResponse('neg', 'Failed reloading', err));
-        });
+        .catch(err =>  message.channel.send(utils.formatResponse('neg', 'Failed reloading', err)));
     } else {
         message.channel.send(utils.formatResponse('neg', 'Missing setup', 'The variables \`GOOGLE_SHEET_ID\` and \`GOOGLE_SHEET_ID\` must be set in order to use a spreadsheet.'));
     }

@@ -50,7 +50,7 @@ export function loadGuildConfigs(guilds) {
           createGoogleSheetsClient(guild);
 
           if (GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
-            loadSpreadsheet(guild).then(res => GUILD_TEMP[guild.id].SCORES = res);
+            loadSpreadsheet(guild).then(res => GUILD_TEMP[guild.id].POINTS = res);
           }
         }
       }
@@ -129,8 +129,8 @@ export function loadSpreadsheet(guild) {
               rows.map(row => ({
                 id: row[0],
                 name: row[1],
-                scoreFormula: row[2] || '=0',
-                score: sheetFormulaTransform(row[2]),
+                pointsFormula: row[2] || '=0',
+                points: sheetFormulaTransform(row[2]),
                 house: row[3] || '',
               })).reduce((map, user) => {
                 map[user.id] = { ...user };
@@ -148,6 +148,41 @@ export function loadSpreadsheet(guild) {
   });
 }
 
+export function updateSpreadsheet(guild) {
+  return new Promise((resolve, reject) => {
+    if (GUILD_TEMP[guild.id].GOOGLE_SHEETS
+      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID
+      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
+        GUILD_TEMP[guild.id].GOOGLE_SHEETS.spreadsheets.values.update({
+          spreadsheetId: GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID,
+          valueInputOption: 'USER_ENTERED',
+          range: `${GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME}!A2:D`,
+          resource: { values: Object.entries(GUILD_TEMP[guild.id].POINTS)
+              .map(item => item[1]) // Get value from key value pair.
+              .sort((a, b) => b.points - a.points) // Sort points
+              .map(item => ([ // Format row.
+                item.id,
+                item.name,
+                item.pointsFormula,
+                item.house,
+              ]))
+          }
+        }, err => {
+          if (err) {
+            reject(err.response && err.response.data && err.response.data.error && err.response.data.error.message
+              ? err.response.data.error.message
+              : 'Google sheets API error.'
+            );
+          } else {
+            resolve();
+          }
+        });
+    } else {
+      reject('Missing Google sheet variables.');
+    }
+  });
+}
+
 export function sheetFormulaTransform(formula) {
   if (!formula) return 0;
   if (!isNaN(parseInt(formula, 10))) return formula; // Not a formula.
@@ -156,4 +191,21 @@ export function sheetFormulaTransform(formula) {
     .substring(1) // Remove '='.
     .split('+') // Can only read formulas using nothing but plus.
     .reduce((add, num) => (add + parseInt(num, 10)), 0); // Sum formula
+}
+
+export function appendFormula(formula, number) {
+  let newFormula = formula;
+  if (!isNaN(parseInt(formula, 10))) newFormula = `=${formula}`;
+  return `${newFormula}+${number}`;
+}
+
+export function getUserPointsRow(guild, user) {
+  return GUILD_TEMP[guild.id].POINTS[user.id]
+  ? GUILD_TEMP[guild.id].POINTS[user.id]
+  : {
+    id: user.id,
+    name: user.username,
+    points: 0,
+    pointsFormula: '=0',
+  };
 }
