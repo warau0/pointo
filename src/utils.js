@@ -56,10 +56,10 @@ export function loadGuildConfigs(guilds) {
           }
         }
 
-        if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length) {
+        /* if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length) {
           // Guild has set up twitch stream watchers.
           createWebHooks(GUILD_CONFIGS[guild.id].TWITCH_STREAMS);
-        }
+        } */
       }
     });
   });
@@ -246,6 +246,7 @@ export function checkGuildConfig(guild) {
   }
 }
 
+/*
 export function twitchStatusChange(request) {
   console.log('Webhook hit, stream changed status');
 }
@@ -274,6 +275,7 @@ export function createWebHooks(streamers) {
     });
   });
 
+  // TODO Fix, needs to wait for all requests to finish..
   if (webhooks > 0) {
     console.log(`Created ${webhooks} Twitch webhooks.`);
   }
@@ -286,3 +288,4 @@ export function removeWebHook(streamer) {
 export function destroyWebHooks() {
   // TODO Unsubscribe from all Twitch webhooks.
 }
+*/

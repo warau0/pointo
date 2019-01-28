@@ -1,6 +1,6 @@
 require('@babel/polyfill');
 import Discord from 'discord.js';
-const app = require('express')();
+// const app = require('express')();
 
 import * as utils from './utils';
 import commands from './commands';
@@ -57,7 +57,7 @@ CLIENT.on('message', async message => {
 
 CLIENT.login(CONFIG.DISCORD_TOKEN);
 
-app.get('/twitch', function (req, res) {
+/* app.get('/twitch', function (req, res) {
   if (!req.query['hub.challenge']) {
     utils.twitchStatusChange(req);
   } else {
@@ -68,8 +68,9 @@ app.get('/twitch', function (req, res) {
 });
 
 app.listen(CONFIG.TWITCH_WEBHOOKS_PORT, () => console.log(`Twitch webhooks listening on port ${CONFIG.TWITCH_WEBHOOKS_PORT}`));
+*/
 
 process.on('SIGINT', () => {
-  utils.destroyWebHooks();
+  // utils.destroyWebHooks();
   process.exit(0);
 });
