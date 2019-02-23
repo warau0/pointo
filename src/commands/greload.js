@@ -20,6 +20,6 @@ export function run(message) {
         })
         .catch(err =>  message.channel.send(utils.formatResponse('neg', 'Failed reloading', err)));
     } else {
-        message.channel.send(utils.formatResponse('neg', 'Missing setup', 'The variables \`GOOGLE_SHEET_ID\` and \`GOOGLE_SHEET_ID\` must be set in order to use a spreadsheet.'));
+        message.channel.send(utils.formatResponse('neg', 'Missing setup', `The variables \`GOOGLE_SHEET_ID\` and \`GOOGLE_SHEET_NAME\` must be set in order to use a spreadsheet. See \`${utils.getPrefix(message)}key\` command.`));
     }
 }

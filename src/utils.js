@@ -21,6 +21,7 @@ export function guildCreate(guild) {
   };
   mkdirSync(path.resolve('./servers'));
   guildUpdate(guild, emptyConfig);
+  GUILD_TEMP[guild.id] = {};
 }
 
 export function guildDelete(guild) {

@@ -20,30 +20,32 @@ export function run(message) {
         }
 
     const msg = utils.stripCommand(message);
+
+    if (GUILD_CONFIGS[message.guild.id].GOOGLE_TOKEN) {
+      message.channel.send(utils.formatResponse(
+        'neg', 'Already authenticated',
+        `Please run \`${utils.getPrefix(message)}greset\` if you wish to reauthenticate.`
+      ));
+      return;
+    }
+
     if (msg) {
         if (!!GUILD_TEMP[message.guild.id].GOOGLE_CLIENT) {
-            if (GUILD_CONFIGS[message.guild.id].GOOGLE_TOKEN) {
-                message.channel.send(utils.formatResponse(
-                    'neg', 'Already authenticated',
-                    `Please run \`${utils.getPrefix(message)}greset\` if you wish to reauthenticate.`
-                ));
-            } else {
-                GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.getToken(msg, (err, token) => {
-                    if (err) {
-                        message.channel.send(utils.formatResponse('neg', 'Failed authenticating', 'Please check your code.'));
-                    } else {
-                        utils.guildUpdate(message.guild, {
-                            ...GUILD_CONFIGS[message.guild.id],
-                            GOOGLE_TOKEN: token,
-                        });
-                        GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.setCredentials(token);
-                        GUILD_TEMP[message.guild.id].GOOGLE_SHEETS = google.sheets(
-                            { version: 'v4', auth: GUILD_TEMP[message.guild.id].GOOGLE_CLIENT }
-                        );
-                        message.channel.send(utils.formatResponse('pos', '', 'Authentication successful!'));
-                    }
-                });
-            }
+            GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.getToken(msg, (err, token) => {
+                if (err) {
+                    message.channel.send(utils.formatResponse('neg', 'Failed authenticating', 'Please check your code.'));
+                } else {
+                    utils.guildUpdate(message.guild, {
+                        ...GUILD_CONFIGS[message.guild.id],
+                        GOOGLE_TOKEN: token,
+                    });
+                    GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.setCredentials(token);
+                    GUILD_TEMP[message.guild.id].GOOGLE_SHEETS = google.sheets(
+                        { version: 'v4', auth: GUILD_TEMP[message.guild.id].GOOGLE_CLIENT }
+                    );
+                    message.channel.send(utils.formatResponse('pos', '', 'Authentication successful!'));
+                }
+            });
         } else {
             message.channel.send(utils.formatResponse('neg', 'No client',
                 `Please run \`${utils.getPrefix(message)}gauth\` to start authenticating.`)
