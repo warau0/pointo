@@ -15,7 +15,7 @@ export async function run(message) {
     if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
 
     const msg = await message.channel.send('Checking for updates ...');
-    exec('git pull', async err => {
+    exec('git fetch && git reset --hard origin/master', async err => {
         if (!err) {
             await msg.edit('Building ...');
             exec('yarn build', async err => {
