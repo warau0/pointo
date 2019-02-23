@@ -11,7 +11,7 @@ const mkdirSync = function (dirPath) {
   } catch(err) {
     if (err.code !== 'EEXIST') throw err
   }
-}
+};
 
 export function guildCreate(guild) {
   const emptyConfig = {
@@ -50,8 +50,6 @@ export function loadGuildConfigs(guilds) {
 
         if (GUILD_CONFIGS[guild.id].GOOGLE_TOKEN) {
           // Guild has setup google auth, recreate the connection.
-          createGoogleSheetsClient(guild);
-
           if (GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
             loadSpreadsheet(guild).then(res => GUILD_TEMP[guild.id].POINTS = res);
           }
@@ -111,16 +109,13 @@ export function createGoogleSheetsClient(guild) {
     CONFIG.GOOGLE_CLIENT_ID, CONFIG.GOOGLE_CLIENT_SECRET, 'urn:ietf:wg:oauth:2.0:oob',
   );
   auth.setCredentials(GUILD_CONFIGS[guild.id].GOOGLE_TOKEN);
-
-  GUILD_TEMP[guild.id].GOOGLE_SHEETS = google.sheets({ version: 'v4', auth });
+  return google.sheets({ version: 'v4', auth });
 }
 
 export function loadSpreadsheet(guild) {
   return new Promise((resolve, reject) => {
-    if (GUILD_TEMP[guild.id].GOOGLE_SHEETS
-      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID
-      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
-      GUILD_TEMP[guild.id].GOOGLE_SHEETS.spreadsheets.values.get({
+    if (GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
+      createGoogleSheetsClient(guild).spreadsheets.values.get({
         spreadsheetId: GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID,
         range: `${GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME}!A2:D`,
         valueRenderOption: 'FORMULA',
@@ -158,33 +153,31 @@ export function loadSpreadsheet(guild) {
 
 export function updateSpreadsheet(guild) {
   return new Promise((resolve, reject) => {
-    if (GUILD_TEMP[guild.id].GOOGLE_SHEETS
-      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID
-      && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
-        GUILD_TEMP[guild.id].GOOGLE_SHEETS.spreadsheets.values.update({
-          spreadsheetId: GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID,
-          valueInputOption: 'USER_ENTERED',
-          range: `${GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME}!A2:D`,
-          resource: { values: Object.entries(GUILD_TEMP[guild.id].POINTS)
-              .map(item => item[1]) // Get value from key value pair.
-              .sort((a, b) => b.points - a.points) // Sort points
-              .map(item => ([ // Format row.
-                item.id,
-                item.name,
-                item.pointsFormula,
-                item.house,
-              ]))
-          }
-        }, err => {
-          if (err) {
-            reject(err.response && err.response.data && err.response.data.error && err.response.data.error.message
-              ? err.response.data.error.message
-              : 'Google sheets API error.'
-            );
-          } else {
-            resolve();
-          }
-        });
+    if (GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID && GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME) {
+      createGoogleSheetsClient(guild).spreadsheets.values.update({
+        spreadsheetId: GUILD_CONFIGS[guild.id].GOOGLE_SHEET_ID,
+        valueInputOption: 'USER_ENTERED',
+        range: `${GUILD_CONFIGS[guild.id].GOOGLE_SHEET_NAME}!A2:D`,
+        resource: { values: Object.entries(GUILD_TEMP[guild.id].POINTS)
+          .map(item => item[1]) // Get value from key value pair.
+          .sort((a, b) => b.points - a.points) // Sort points
+          .map(item => ([ // Format row.
+            item.id,
+            item.name,
+            item.pointsFormula,
+            item.house,
+          ]))
+        }
+      }, err => {
+        if (err) {
+          reject(err.response && err.response.data && err.response.data.error && err.response.data.error.message
+            ? err.response.data.error.message
+            : 'Google sheets API error.'
+          );
+        } else {
+          resolve();
+        }
+      });
     } else {
       reject('Missing Google sheet variables.');
     }

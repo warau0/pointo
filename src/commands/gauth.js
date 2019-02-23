@@ -1,5 +1,3 @@
-import { google } from 'googleapis';
-
 import * as utils from '../utils';
 
 export const usage = 'gauth <code>';
@@ -13,11 +11,11 @@ export function run(message) {
     if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
 
     if (!CONFIG.GOOGLE_CLIENT_ID ||
-        !CONFIG.GOOGLE_CLIENT_SECRET ||
-        !CONFIG.GOOGLE_PROJECT_ID) {
-            message.channel.send(utils.formatResponse('neg', 'No client', 'Bot owner has not set up OAuth2 authentication.'));
-            return;
-        }
+      !CONFIG.GOOGLE_CLIENT_SECRET ||
+      !CONFIG.GOOGLE_PROJECT_ID) {
+      message.channel.send(utils.formatResponse('neg', 'No client', 'Bot owner has not set up OAuth2 authentication.'));
+      return;
+    }
 
     const msg = utils.stripCommand(message);
 
@@ -30,37 +28,23 @@ export function run(message) {
     }
 
     if (msg) {
-        if (!!GUILD_TEMP[message.guild.id].GOOGLE_CLIENT) {
-            GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.getToken(msg, (err, token) => {
-                if (err) {
-                    message.channel.send(utils.formatResponse('neg', 'Failed authenticating', 'Please check your code.'));
-                } else {
-                    utils.guildUpdate(message.guild, {
-                        ...GUILD_CONFIGS[message.guild.id],
-                        GOOGLE_TOKEN: token,
-                    });
-                    GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.setCredentials(token);
-                    GUILD_TEMP[message.guild.id].GOOGLE_SHEETS = google.sheets(
-                        { version: 'v4', auth: GUILD_TEMP[message.guild.id].GOOGLE_CLIENT }
-                    );
-                    message.channel.send(utils.formatResponse('pos', '', 'Authentication successful!'));
-                }
-            });
-        } else {
-            message.channel.send(utils.formatResponse('neg', 'No client',
-                `Please run \`${utils.getPrefix(message)}gauth\` to start authenticating.`)
-            );
-        }
+        GOOGLE_AUTH.getToken(msg, (err, token) => {
+            if (err) {
+                message.channel.send(utils.formatResponse('neg', 'Failed authenticating', 'Please check your code.'));
+            } else {
+                utils.guildUpdate(message.guild, {
+                    ...GUILD_CONFIGS[message.guild.id],
+                    GOOGLE_TOKEN: token,
+                });
+                message.channel.send(utils.formatResponse('pos', '', 'Authentication successful!'));
+            }
+        });
     } else {
-        GUILD_TEMP[message.guild.id].GOOGLE_CLIENT = new google.auth.OAuth2(
-            CONFIG.GOOGLE_CLIENT_ID, CONFIG.GOOGLE_CLIENT_SECRET, 'urn:ietf:wg:oauth:2.0:oob',
-          );
-
-          const authUrl = GUILD_TEMP[message.guild.id].GOOGLE_CLIENT.generateAuthUrl({
+        const authUrl = GOOGLE_AUTH.generateAuthUrl({
             access_type: 'offline', scope: ['https://www.googleapis.com/auth/spreadsheets'],
-          });
+        });
 
-          message.channel.send(`Get Google authorization code here: __${authUrl}__\n` +
+        message.channel.send(`Get Google authorization code here: __${authUrl}__\n` +
             `Enter code as follows: \`${utils.getPrefix(message)}gauth <code>\``);
     }
 }
