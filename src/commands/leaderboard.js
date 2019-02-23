@@ -10,6 +10,16 @@ export const group = 'points';
 export function run(message) {
     const msg = utils.stripCommand(message);
 
+    if (!GUILD_CONFIGS[message.guild.id].GOOGLE_SHEET_ID) {
+        message.channel.send(utils.formatResponse('neg', 'Missing setup', `The \`GOOGLE_SHEET_ID\` variable must be set. See \`${utils.getPrefix(message)}key\` command.`));
+        return;
+    }
+
+    if (!GUILD_TEMP[message.guild.id].POINTS || !Object.keys(GUILD_TEMP[message.guild.id].POINTS).length) {
+      message.channel.send(utils.formatResponse('neg', `The leaderboard is empty.`));
+      return;
+    }
+
     let response = ':trophy: **Houses Leaderboard**:\n';
 
     if (!msg) {
