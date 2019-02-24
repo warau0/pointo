@@ -1,5 +1,9 @@
 ## Give me your points!
 
+This a very simple bot to keep track of scores or any kind of point system.
+You provide the bot with a Google spreadsheet and then anyone can tally up their own points.
+Admins can also control other people's points.
+
 ### Adding the bot to your server:
 1. Add to server from https://discordapp.com/api/oauth2/authorize?client_id=518608155907719168&permissions=0&scope=bot
 
@@ -8,7 +12,10 @@
 3. Add yourself and other any other users you want as admins with `p!admin <user>`.
 
 4. Set up google variables and auth with the commands `p!key <key> <value>` and `p!gauth`.
+    - `GOOGLE_SHEET_NAME` example: `Page1`.
+    - `GOOGLE_SHEET_ID` example: `1dZHWlxlr-CbPocQ2DB9kQH3Y7TnShSyU-N7v_wsRxjv`.
 
+5. If you run into any issues you can contact me at `warau#0438` and I'll see if I can help you out.
 
 ### Setting up your own instance:
 

@@ -21,7 +21,7 @@ export function guildCreate(guild) {
   };
   mkdirSync(path.resolve('./servers'));
   guildUpdate(guild, emptyConfig);
-  GUILD_TEMP[guild.id] = {};
+  GUILD_TEMP[guild.id] = { POINTS: {} };
 }
 
 export function guildDelete(guild) {
@@ -42,11 +42,11 @@ export function loadGuildConfigs(guilds) {
           NAME: guild.name,
         };
         guildUpdate(guild, emptyConfig);
-        GUILD_TEMP[guild.id] = {};
+        GUILD_TEMP[guild.id] = { POINTS: {} };
       } else {
         GUILD_CONFIGS[guild.id] = JSON.parse(data);
         checkGuildConfig(guild);
-        GUILD_TEMP[guild.id] = {};
+        GUILD_TEMP[guild.id] = { POINTS: {} };
 
         if (GUILD_CONFIGS[guild.id].GOOGLE_TOKEN) {
           // Guild has setup google auth, recreate the connection.
