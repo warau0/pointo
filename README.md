@@ -5,7 +5,8 @@ You provide the bot with a Google spreadsheet and then anyone can tally up their
 Admins can also control other people's points.
 
 ### Adding the bot to your server:
-1. Add to server from https://discordapp.com/api/oauth2/authorize?client_id=518608155907719168&permissions=0&scope=bot
+~~1. Add to server from https://discordapp.com/api/oauth2/authorize?client_id=518608155907719168&permissions=0&scope=bot~~
+#### The bot is currently not being hosted anywhere. Set up your own instance if you wish to use this.
 
 2. Familiarize yourself with the commands using `p!help`.
 
