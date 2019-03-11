@@ -16,8 +16,6 @@ Admins can also control other people's points.
     - `GOOGLE_SHEET_NAME` example: `Page1`.
     - `GOOGLE_SHEET_ID` example: `1dZHWlxlr-CbPocQ2DB9kQH3Y7TnShSyU-N7v_wsRxjv`.
 
-5. If you run into any issues you can contact me at `warau#0438` and I'll see if I can help you out.
-
 ### Setting up your own instance:
 
 1. Make a `config.json` file in project root that looks like this example:
