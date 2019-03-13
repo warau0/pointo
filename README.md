@@ -32,5 +32,8 @@ Admins can also control other people's points.
 2. Install dependencies:\
     `yarn`
 
-3. Build and run the bot:\
+3. Build the project:\
+    `yarn build`
+
+4. Start the bot:\
     `yarn start`
