@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist/* && babel src --out-dir dist",
-    "start": "yarn build && node dist/index.js"
+    "start": "node dist/index.js",
+    "gcp-build": "npm install && npm run build",
+    "deploy": "gcloud app deploy"
   },
   "repository": {
     "type": "git",
@@ -25,17 +27,15 @@
   },
   "homepage": "https://github.com/LarsWalter/pointo-bot",
   "dependencies": {
-    "discord.js": "^11.4.2",
-    "express": "^4.16.4",
-    "googleapis": "^36.0.0",
-    "request": "^2.88.0"
-  },
-  "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
     "@babel/plugin-proposal-class-properties": "^7.3.0",
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.1.6",
+    "discord.js": "^11.4.2",
+    "express": "^4.16.4",
+    "googleapis": "^36.0.0",
+    "request": "^2.88.0",
     "rimraf": "^2.6.2"
   }
 }
