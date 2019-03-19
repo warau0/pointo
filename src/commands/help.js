@@ -26,7 +26,6 @@ export function run(message) {
     } else {
         let msg = ':mega: **Commands**\n';
         const groups = {};
-        console.log(commands);
         Object.keys(commands).forEach(command => {
             if (!commands[command].alias) {
                 if (!groups[commands[command].group]) {

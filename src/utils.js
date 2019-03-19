@@ -77,6 +77,10 @@ export function stripCommand(message) {
   }
 }
 
+export function stripMentions(message) {
+  return message.replace(/ *<[^)]*> */g, ''); // Removes everything inside < >.
+}
+
 export function getPrefix(message) {
   const guildConfig = GUILD_CONFIGS[message.guild.id];
   return guildConfig && guildConfig.PREFIX ? guildConfig.PREFIX.toLowerCase() : constants.DEFAULT_PREFIX;

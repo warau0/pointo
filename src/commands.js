@@ -5,6 +5,7 @@ import * as gauth from './commands/gauth';
 import * as greload from './commands/greload';
 import * as greset from './commands/greset';
 import * as help from './commands/help';
+import * as house from './commands/house';
 import * as key from './commands/key';
 import * as leaderboard from './commands/leaderboard';
 import * as pointsadd from './commands/pointsadd';
@@ -26,6 +27,7 @@ export default utils.extractAliases({
     greload,
     greset,
     help,
+    house,
     key,
     leaderboard,
     pointsadd,
