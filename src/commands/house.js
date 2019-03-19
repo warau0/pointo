@@ -12,6 +12,8 @@ export function run(message) {
         return message.channel.send(utils.formatResponse('neg', 'Missing setup', `The variables \`GOOGLE_SHEET_ID\` and \`GOOGLE_SHEET_NAME\` must be set in order to use a spreadsheet. See \`${utils.getPrefix(message)}key\` command.`));
     }
 
+    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+
     const msg = utils.stripCommand(message);
 
     if (!msg || !message.mentions.members.first()) {
