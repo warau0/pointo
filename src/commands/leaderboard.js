@@ -3,7 +3,7 @@ import * as utils from '../utils';
 export const usage = 'leaderboard <count>';
 export const short = 'View all the points.';
 export const description = `Either prints the link to the spreadsheet or top X / all users.`;
-export const aliases = ['scores', 'leaderboard', 'leaderboards', 'top'];
+export const aliases = ['scores', 'leaderboards', 'top'];
 export const examples = ['leaderboard', 'leaderboard 5', 'leaderboard all'];
 export const group = 'points';
 
@@ -11,8 +11,7 @@ export function run(message) {
     const msg = utils.stripCommand(message);
 
     if (!GUILD_CONFIGS[message.guild.id].GOOGLE_SHEET_ID) {
-        message.channel.send(utils.formatResponse('neg', 'Missing setup', `The \`GOOGLE_SHEET_ID\` variable must be set. See \`${utils.getPrefix(message)}key\` command.`));
-        return;
+        return message.channel.send(utils.formatResponse('neg', 'Missing setup', `The \`GOOGLE_SHEET_ID\` variable must be set. See \`${utils.getPrefix(message)}key\` command.`));
     }
 
     if (!GUILD_TEMP[message.guild.id].POINTS || !Object.keys(GUILD_TEMP[message.guild.id].POINTS).length) {

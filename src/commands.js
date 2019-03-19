@@ -12,7 +12,7 @@ import * as pointsgive from './commands/pointsgive';
 import * as pointssub from './commands/pointssub';
 import * as pointstake from './commands/pointstake';
 import * as prefix from './commands/prefix';
-// import * as reboot from './commands/reboot';
+import * as reboot from './commands/reboot';
 import * as roleedit from './commands/roleedit';
 import * as roletoggle from './commands/roletoggle';
 import * as source from './commands/source';
@@ -33,7 +33,7 @@ export default utils.extractAliases({
     pointssub,
     pointstake,
     prefix,
-    // reboot,
+    reboot,
     roleedit,
     roletoggle,
     source,
