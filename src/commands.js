@@ -16,7 +16,7 @@ import * as prefix from './commands/prefix';
 import * as reboot from './commands/reboot';
 import * as roleedit from './commands/roleedit';
 import * as roletoggle from './commands/roletoggle';
-import * as source from './commands/source';
+import * as support from './commands/support';
 import * as stats from './commands/stats';
 // import * as twitch from './commands/twitch';
 import * as uinfo from './commands/uinfo';
@@ -38,7 +38,7 @@ export default utils.extractAliases({
     reboot,
     roleedit,
     roletoggle,
-    source,
+    support,
     stats,
     // twitch,
     uinfo,

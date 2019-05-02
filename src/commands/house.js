@@ -35,7 +35,7 @@ export function run(message) {
     userRow.name = user.username;
     userRow.house = house;
 
-    GUILD_TEMP[message.guild.id].POINTS[message.author.id] = userRow;
+    GUILD_TEMP[message.guild.id].POINTS[user.id] = userRow;
     utils.updateSpreadsheet(message.guild)
         .then(() => message.channel.send(utils.formatResponse('pos', '',
             `**${userRow.name}** is now in the **${house}** house!`)))
