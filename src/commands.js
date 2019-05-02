@@ -18,7 +18,7 @@ import * as roleedit from './commands/roleedit';
 import * as roletoggle from './commands/roletoggle';
 import * as support from './commands/support';
 import * as stats from './commands/stats';
-// import * as twitch from './commands/twitch';
+import * as twitch from './commands/twitch';
 import * as uinfo from './commands/uinfo';
 
 export default utils.extractAliases({
@@ -40,6 +40,6 @@ export default utils.extractAliases({
     roletoggle,
     support,
     stats,
-    // twitch,
+    twitch,
     uinfo,
 });

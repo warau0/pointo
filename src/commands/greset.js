@@ -3,7 +3,7 @@ import * as utils from '../utils';
 export const usage = 'greset';
 export const short = 'Remove Google authentication.';
 export const description = 'Delete established Google authentication.';
-export const aliases = ['googlereset', 'reset'];
+export const aliases = ['googlereset'];
 export const examples = [];
 export const group = 'settings';
 

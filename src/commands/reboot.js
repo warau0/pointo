@@ -12,23 +12,23 @@ export const examples = [];
 export const group = 'utlity';
 
 export async function run(message) {
-    if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
+  if (!utils.isAdmin(message)) return message.channel.send(utils.formatResponse('neg', 'Unauthorized', 'Only admins can use this command.'));
 
-    const msg = await message.channel.send('Checking for updates ...');
-    exec('git fetch && git reset --hard origin/master', async err => {
+  const msg = await message.channel.send('Checking for updates ...');
+  exec('git fetch && git reset --hard origin/master', async err => {
+    if (!err) {
+      await msg.edit('Building ...');
+      exec('yarn build', async err => {
         if (!err) {
-            await msg.edit('Building ...');
-            exec('yarn build', async err => {
-                if (!err) {
-                    await msg.edit('Rebooting ...');
-                    fs.writeFile(path.resolve('./reboot.json'), JSON.stringify({
-                        channel: msg.channel.id,
-                        time: +new Date(),
-                    }), () => {
-                        process.exit(1);
-                    });
-                }
-            })
+          await msg.edit('Rebooting ...');
+          fs.writeFile(path.resolve('./reboot.json'), JSON.stringify({
+            channel: msg.channel.id,
+            time: +new Date(),
+          }), () => {
+            process.kill(process.pid, 'SIGINT'); // Say goodnight.
+          });
         }
-    });
+      })
+    }
+  });
 }

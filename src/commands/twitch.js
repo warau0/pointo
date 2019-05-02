@@ -20,12 +20,21 @@ export function run(message) {
         return message.channel.send(utils.formatResponse('neg', '', 'No streamers are being watched.'));
     }
 
-    if (GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.map(i => i.split('::')[0].toLowerCase()).indexOf(msg.toLowerCase()) !== -1) {
+    let streamer;
+    GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.forEach(s => {
+        let [user, id] = s.split('::');
+        user = user.toLowerCase();
+        if (user === msg) {
+            streamer = [user, id];
+        }
+    });
+
+    if (streamer) {
         utils.guildUpdate(message.guild, {
             ...GUILD_CONFIGS[message.guild.id],
-            TWITCH_STREAMS: GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.filter(i => i.split('::')[0].toLowerCase() !== msg.toLowerCase()),
+            TWITCH_STREAMS: GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.filter(i => i !== `${streamer[0]}::${streamer[1]}`),
         });
-        utils.removeWebHook(msg);
+        utils.destroyWebHook(streamer[1], streamer[0]);
         message.channel.send(utils.formatResponse('pos', '', `**${msg}** is no longer being watched.`));
     } else {
         request({
@@ -41,7 +50,7 @@ export function run(message) {
                     ...GUILD_CONFIGS[message.guild.id],
                     TWITCH_STREAMS: [...GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS, `${msg}::${twitchID}`],
                 });
-                utils.createWebHooks([msg]);
+                utils.createWebHook(twitchID, msg);
                 message.channel.send(utils.formatResponse('pos', '', `**${msg}** is now being watched!`));
             } else {
                 message.channel.send(utils.formatResponse('neg', '', `Found no Twitch user named \`${msg}\`.`));
