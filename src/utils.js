@@ -272,11 +272,13 @@ export function twitchStatusChange(streamerID, body) {
 
 export function announceStream(guildID, name) {
   if (GUILD_CONFIGS[guildID].STREAM_CHANNEL) {
-    CLIENT.channels.get(GUILD_CONFIGS[guildID].STREAM_CHANNEL)
-      .send(`:tv: ${GUILD_CONFIGS[guildID].STREAM_ROLE ? GUILD_CONFIGS[guildID].STREAM_ROLE + ' ' : ''}${name} is now live! https://www.twitch.tv/${name}`)
-      .then((msg) => {
-        GUILD_TEMP[guildID].STREAMS[name] = msg;
-      });
+    if (!GUILD_TEMP[guildID].STREAMS[name]) { // Only announce if haven't already. Blocks any potential duplicate announcements
+      CLIENT.channels.get(GUILD_CONFIGS[guildID].STREAM_CHANNEL)
+        .send(`:tv: ${GUILD_CONFIGS[guildID].STREAM_ROLE ? GUILD_CONFIGS[guildID].STREAM_ROLE + ' ' : ''}${name} is now live! https://www.twitch.tv/${name}`)
+        .then((msg) => {
+          GUILD_TEMP[guildID].STREAMS[name] = msg;
+        });
+    }
   }
 }
 
@@ -301,7 +303,7 @@ export function createWebHook(id, user) {
       'hub.mode': 'subscribe',
       'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${id}`,
       'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.TWITCH_WEBHOOKS_PORT}/twitch_sub/${id}`,
-      'hub.lease_seconds': (86400 * 4), // 4 days, 10 is max
+      'hub.lease_seconds': (86400 * 10), // 10 days (max)
     },
     // TODO Send hub.secret
     // TODO Create a timeout refreshing webhook if bot is still up when lease expires.
