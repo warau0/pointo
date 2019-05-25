@@ -287,6 +287,7 @@ export function denounceStream(guildID, name) {
     if (GUILD_TEMP[guildID].STREAMS[name]) {
       GUILD_TEMP[guildID].STREAMS[name]
         .edit(`:zzz: ${name} has gone offline. https://www.twitch.tv/${name}`);
+      delete GUILD_TEMP[guildID].STREAMS[name];
     }
   }
 }
