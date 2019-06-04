@@ -8,6 +8,7 @@ import * as help from './commands/help';
 import * as house from './commands/house';
 import * as key from './commands/key';
 import * as leaderboard from './commands/leaderboard';
+import * as lordofroles from './commands/lordofroles';
 import * as pointsadd from './commands/pointsadd';
 import * as pointsgive from './commands/pointsgive';
 import * as pointssub from './commands/pointssub';
@@ -30,6 +31,7 @@ export default utils.extractAliases({
     house,
     key,
     leaderboard,
+    lordofroles,
     pointsadd,
     pointsgive,
     pointssub,
