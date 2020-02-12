@@ -48,11 +48,13 @@ CLIENT.on('guildCreate', guild => {
   console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
 });
 
+/* Due to connectively issues with Discord the leave functionality is disabled.
 CLIENT.on('guildDelete', guild => {
   utils.guildDelete(guild);
   console.log(`Deleted guild: ${guild.name} (id: ${guild.id})`);
   console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
 });
+*/
 
 CLIENT.on('message', async message => {
   if (!message.guild) return;
