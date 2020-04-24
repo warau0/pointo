@@ -67,6 +67,11 @@ CLIENT.on('message', async message => {
   if (cmd) cmd.run(message);
 });
 
+client.on('error', err => {
+  console.error(err);
+  process.exit(1);
+});
+
 CLIENT.login(CONFIG.DISCORD_TOKEN);
 
 app.get('/twitch_sub/:user', function (req, res) {
