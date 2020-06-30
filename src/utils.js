@@ -55,7 +55,7 @@ export function loadGuildConfigs(guilds) {
           }
         }
 
-        if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length) {
+        if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length && GUILD_CONFIGS[guild.id].TWITCH_TOKEN) {
           // Guild has set up twitch stream watchers.
           createWebHooks(guild.id, GUILD_CONFIGS[guild.id].TWITCH_STREAMS);
         }
@@ -362,7 +362,7 @@ export function createWebHooks(guildId, streamers) {
 export function destroyWebHooks() {
   const promises = [];
   Object.values(GUILD_CONFIGS).forEach(guild => {
-    if(guild.TWITCH_STREAMS.length) {
+    if (guild.TWITCH_STREAMS.length && guild.TWITCH_TOKEN) {
       guild.TWITCH_STREAMS.forEach(streamer => {
         const [user, id] = streamer.split('::');
         promises.push(destroyWebHook(guild.ID, id, user));
