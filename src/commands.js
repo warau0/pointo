@@ -18,8 +18,10 @@ import * as reboot from './commands/reboot';
 import * as roleedit from './commands/roleedit';
 import * as roletoggle from './commands/roletoggle';
 import * as say from './commands/say';
-import * as support from './commands/support';
 import * as stats from './commands/stats';
+import * as support from './commands/support';
+import * as tauth from './commands/tauth';
+import * as treset from './commands/treset';
 import * as twitch from './commands/twitch';
 import * as uinfo from './commands/uinfo';
 
@@ -42,8 +44,10 @@ export default utils.extractAliases({
     roleedit,
     roletoggle,
     say,
-    support,
     stats,
+    support,
+    tauth,
+    treset,
     twitch,
     uinfo,
 });

@@ -20,6 +20,11 @@ export function run(message) {
         return message.channel.send(utils.formatResponse('neg', '', 'No streamers are being watched.'));
     }
 
+    if (!GUILD_CONFIGS[message.guild.id].TWITCH_TOKEN) {
+        return message.channel.send(utils.formatResponse('neg', 'Missing authentication',
+            `Run \`${utils.getPrefix(message)}tauth\` to setup Twitch authentication.`));
+    }
+
     let streamer;
     GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.forEach(s => {
         let [user, id] = s.split('::');
@@ -34,24 +39,28 @@ export function run(message) {
             ...GUILD_CONFIGS[message.guild.id],
             TWITCH_STREAMS: GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.filter(i => i !== `${streamer[0]}::${streamer[1]}`),
         });
-        utils.destroyWebHook(streamer[1], streamer[0]);
+        utils.destroyWebHook(message.guild.id, streamer[1], streamer[0]);
         message.channel.send(utils.formatResponse('pos', '', `**${msg}** is no longer being watched.`));
     } else {
         request({
             method: 'GET',
             uri: `https://api.twitch.tv/helix/users?login=${msg}`,
-            headers: { 'Client-ID': CONFIG.TWITCH_CLIENT_ID }
+            headers: { 'Client-ID': CONFIG.TWITCH_CLIENT_ID,
+            Authorization: `Bearer ${GUILD_CONFIGS[message.guild.id].TWITCH_TOKEN.access_token}`,
+        }
           }, (err, _, body) => {
             if (err) { return message.channel.send(utils.formatResponse('neg', '', `Twitch API error looking up \`${msg}\`.`)); }
-            const res = JSON.parse(body).data;
-            if (res && res.length) {
-                const twitchID = res[0].id;
+            const res = JSON.parse(body);
+            if (res && res.data && res.data.length) {
+                const twitchID = res.data[0].id;
                 utils.guildUpdate(message.guild, {
                     ...GUILD_CONFIGS[message.guild.id],
                     TWITCH_STREAMS: [...GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS, `${msg}::${twitchID}`],
                 });
-                utils.createWebHook(twitchID, msg);
+                utils.createWebHook(message.guild.id, twitchID, msg);
                 message.channel.send(utils.formatResponse('pos', '', `**${msg}** is now being watched!`));
+            } else if (res && res.error && res.message) {
+                message.channel.send(utils.formatResponse('neg', res.error, res.message));
             } else {
                 message.channel.send(utils.formatResponse('neg', '', `Found no Twitch user named \`${msg}\`.`));
             }

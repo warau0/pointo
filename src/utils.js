@@ -57,7 +57,7 @@ export function loadGuildConfigs(guilds) {
 
         if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length) {
           // Guild has set up twitch stream watchers.
-          createWebHooks(GUILD_CONFIGS[guild.id].TWITCH_STREAMS);
+          createWebHooks(guild.id, GUILD_CONFIGS[guild.id].TWITCH_STREAMS);
         }
       }
     });
@@ -292,18 +292,19 @@ export function denounceStream(guildID, name) {
   }
 }
 
-export function createWebHook(id, user) {
+export function createWebHook(guildId, id, user) {
   request({
     method: 'POST',
     uri: `https://api.twitch.tv/helix/webhooks/hub`,
     headers: {
       'Client-ID': CONFIG.TWITCH_CLIENT_ID,
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${GUILD_CONFIGS[guildId].TWITCH_TOKEN.access_token}`,
     },
     json: {
       'hub.mode': 'subscribe',
       'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${id}`,
-      'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.TWITCH_WEBHOOKS_PORT}/twitch_sub/${id}`,
+      'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.HOST_PORT}/twitch/sub/${id}`,
       'hub.lease_seconds': (86400 * 10), // 10 days (max)
     },
     // TODO Send hub.secret
@@ -312,11 +313,13 @@ export function createWebHook(id, user) {
     if (err) { return console.log('Failed creating webhook', err); }
     if (res.statusCode === 202) {
       console.log(`Created webhook: ${user} (${id})`);
+    } else {
+      console.error(res);
     }
   });
 }
 
-export function destroyWebHook(id, user) {
+export function destroyWebHook(guildId, id, user) {
   return new Promise((resolve, reject) => {
     request({
       method: 'POST',
@@ -324,11 +327,12 @@ export function destroyWebHook(id, user) {
       headers: {
         'Client-ID': CONFIG.TWITCH_CLIENT_ID,
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${GUILD_CONFIGS[guildId].TWITCH_TOKEN.access_token}`,
       },
       json: {
         'hub.mode': 'unsubscribe',
         'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${id}`,
-        'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.TWITCH_WEBHOOKS_PORT}/twitch_unsub/${id}`,
+        'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.HOST_PORT}/twitch/unsub/${id}`,
       },
     }, (err, res) => {
       if (res.statusCode === 202) {
@@ -346,11 +350,11 @@ export function destroyWebHook(id, user) {
   })
 }
 
-export function createWebHooks(streamers) {
+export function createWebHooks(guildId, streamers) {
   const promises = [];
   streamers.forEach(streamer => {
     const [user, id] = streamer.split('::');
-    promises.push(createWebHook(id, user));
+    promises.push(createWebHook(guildId, id, user));
   });
   return promises;
 }
@@ -361,7 +365,7 @@ export function destroyWebHooks() {
     if(guild.TWITCH_STREAMS.length) {
       guild.TWITCH_STREAMS.forEach(streamer => {
         const [user, id] = streamer.split('::');
-        promises.push(destroyWebHook(id, user));
+        promises.push(destroyWebHook(guild.ID, id, user));
       });
     }
   });

@@ -1,9 +1,7 @@
 import {google} from "googleapis/build/src/index";
-
 require('@babel/polyfill');
 import Discord from 'discord.js';
-
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const app = require('express')();
 app.use(bodyParser.json());
 
@@ -67,38 +65,42 @@ CLIENT.on('message', async message => {
   if (cmd) cmd.run(message);
 });
 
-client.on('error', err => {
+CLIENT.on('error', err => {
   console.error(err);
   process.exit(1);
 });
 
 CLIENT.login(CONFIG.DISCORD_TOKEN);
 
-app.get('/twitch_sub/:user', function (req, res) {
+app.get('/twitch/sub/:user', function (req, res) {
   res
   .set('Content-Type', 'text/plain')
   .status(200)
   .send(req.query['hub.challenge'] ? req.query['hub.challenge'] : 'No challenge!');
 });
 
-app.get('/twitch_unsub/:user', function (req, res) {
+app.get('/twitch/unsub/:user', function (req, res) {
   res
   .set('Content-Type', 'text/plain')
   .status(200)
   .send(req.query['hub.challenge'] ? req.query['hub.challenge'] : 'No challenge!');
 });
 
-app.post('/twitch_sub/:user', function (req, res) {
+app.post('/twitch/sub/:user', function (req, res) {
   utils.twitchStatusChange(req.params.user, req.body);
   res.sendStatus(200);
 });
 
-app.post('/twitch_unsub/:user', function (req, res) {
+app.post('/twitch/unsub/:user', function (req, res) {
   utils.destroyWebHook(req.params.user);
   res.sendStatus(200);
 });
 
-app.listen(CONFIG.TWITCH_WEBHOOKS_PORT, () => console.log(`Twitch webhooks listening on port ${CONFIG.TWITCH_WEBHOOKS_PORT}`));
+app.get('/twitch/auth_callback', (req, res) => {
+  res.send(req.query.code);
+});
+
+app.listen(CONFIG.HOST_PORT, () => console.log(`Twitch webhooks listening on port ${CONFIG.HOST_PORT}`));
 
 process.on('SIGINT', () => {
   Promise.all(utils.destroyWebHooks())

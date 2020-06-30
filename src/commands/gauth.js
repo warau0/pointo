@@ -3,7 +3,7 @@ import * as utils from '../utils';
 export const usage = 'gauth <code>';
 export const short = 'Authenticate with Google.';
 export const description = 'Authenticate a Google accounnt with the bot. Required before using a google Sheet.';
-export const aliases = ['googleauth', 'auth'];
+export const aliases = ['googleauth'];
 export const examples = ['gauth', 'gauth 3/4gBP2D8QhvcESmz...'];
 export const group = 'settings';
 
@@ -13,7 +13,7 @@ export function run(message) {
     if (!CONFIG.GOOGLE_CLIENT_ID ||
       !CONFIG.GOOGLE_CLIENT_SECRET ||
       !CONFIG.GOOGLE_PROJECT_ID) {
-      message.channel.send(utils.formatResponse('neg', 'No client', 'Bot owner has not set up OAuth2 authentication.'));
+      message.channel.send(utils.formatResponse('neg', 'No client', 'Bot owner has not set up Google OAuth2 authentication.'));
       return;
     }
 
