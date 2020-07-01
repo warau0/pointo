@@ -42,14 +42,16 @@ export function run(message) {
         utils.destroyWebHook(message.guild.id, streamer[1], streamer[0]);
         message.channel.send(utils.formatResponse('pos', '', `**${msg}** is no longer being watched.`));
     } else {
-        request({
+        utils.twitchRequest(message.guild.id, {
             method: 'GET',
             uri: `https://api.twitch.tv/helix/users?login=${msg}`,
-            headers: { 'Client-ID': CONFIG.TWITCH_CLIENT_ID,
-            Authorization: `Bearer ${GUILD_CONFIGS[message.guild.id].TWITCH_TOKEN.access_token}`,
-        }
+            headers: {
+                'Client-ID': CONFIG.TWITCH_CLIENT_ID,
+                Authorization: `Bearer ${GUILD_CONFIGS[message.guild.id].TWITCH_TOKEN.access_token}`,
+            },
           }, (err, _, body) => {
             if (err) { return message.channel.send(utils.formatResponse('neg', '', `Twitch API error looking up \`${msg}\`.`)); }
+
             const res = JSON.parse(body);
             if (res && res.data && res.data.length) {
                 const twitchID = res.data[0].id;
@@ -59,8 +61,8 @@ export function run(message) {
                 });
                 utils.createWebHook(message.guild.id, twitchID, msg);
                 message.channel.send(utils.formatResponse('pos', '', `**${msg}** is now being watched!`));
-            } else if (res && res.error && res.message) {
-                message.channel.send(utils.formatResponse('neg', res.error, res.message));
+            } else if (res && res.status !== 200 && res.message) {
+                message.channel.send(utils.formatResponse('neg', res.error || 'Failed', res.message));
             } else {
                 message.channel.send(utils.formatResponse('neg', '', `Found no Twitch user named \`${msg}\`.`));
             }

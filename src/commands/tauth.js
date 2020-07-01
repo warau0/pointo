@@ -1,11 +1,12 @@
 import request from 'request';
+import moment from 'moment';
 import * as utils from '../utils';
 
 export const usage = 'tauth <code>';
 export const short = 'Authenticate with Twitch.';
 export const description = 'Authenticate a Twitch account with the bot. Required before using Stream notifications.';
 export const aliases = ['twitchauth'];
-export const examples = ['tauth', 'gauth {"access_token":"g1vysdan8...'];
+export const examples = ['tauth', 'gauth 3cylyt2w...'];
 export const group = 'settings';
 
 export function run(message) {
@@ -40,14 +41,23 @@ export function run(message) {
             },
           }, (err, res) => {
             if (err) {
-                console.log(err);
                 message.channel.send(utils.formatResponse('neg', 'Failed authenticating', 'Please check your code.'));
             } else {
+              const body = JSON.parse(res.body);
+
+              if (body && body.status !== 200 && body.message) {
+                message.channel.send(utils.formatResponse('neg', 'Failed authenticating', body.message));
+              } else {
+                const expiry_date = +moment()
+                  .add(res.body.expires_in, 'seconds') // Point of expiry
+                  .add(5, 'seconds'); // Some leeway
+
                 utils.guildUpdate(message.guild, {
                     ...GUILD_CONFIGS[message.guild.id],
-                    TWITCH_TOKEN: JSON.parse(res.body),
+                    TWITCH_TOKEN: { ...body, expiry_date },
                 });
                 message.channel.send(utils.formatResponse('pos', '', 'Authentication successful!'));
+              }
             }
           });
     } else {

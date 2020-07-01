@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { google } from 'googleapis';
 import request from 'request';
+import moment from 'moment';
 
 import * as constants from './constants';
 
@@ -57,7 +58,7 @@ export function loadGuildConfigs(guilds) {
 
         if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length && GUILD_CONFIGS[guild.id].TWITCH_TOKEN) {
           // Guild has set up twitch stream watchers.
-          createWebHooks(guild.id, GUILD_CONFIGS[guild.id].TWITCH_STREAMS);
+          twitchRequest(guild.id, null, () => createWebHooks(guild.id, GUILD_CONFIGS[guild.id].TWITCH_STREAMS));
         }
       }
     });
@@ -292,8 +293,56 @@ export function denounceStream(guildID, name) {
   }
 }
 
+export function twitchRequest(guildId, requestData, callback) {
+  const token = GUILD_CONFIGS[guildId].TWITCH_TOKEN;
+  const expiryInFuture = moment(token.expiry_date).isAfter();
+  if (expiryInFuture) {
+    if (requestData) {
+      return request(requestData, callback);
+    } else {
+      callback();
+    }
+  } else {
+    console.log('Refreshing twitch token');
+    request({
+      method: 'POST',
+      uri: `https://id.twitch.tv/oauth2/token`
+      + `?client_id=${CONFIG.TWITCH_CLIENT_ID}&client_secret=${CONFIG.TWITCH_CLIENT_SECRET}`
+      + `&grant_type=refresh_token`
+      + `&refresh_token=${token.refresh_token}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    }, (err, res) => {
+      if (err) {
+          callback(err);
+      } else {
+          const body = JSON.parse(res.body);
+
+          if (body && body.status !== 200 && body.message) {
+            return callback(null, null, JSON.stringify(body));
+          } else {
+            const expiry_date = +moment().add(body.expires_in, 'seconds').add(5, 'seconds');
+
+            guildUpdate({ id: guildId }, {
+                ...GUILD_CONFIGS[guildId],
+                TWITCH_TOKEN: { ...body, expiry_date },
+            });
+    
+            if (requestData) {
+              return request(requestData, callback);
+            } else {
+              callback();
+            }
+          }
+      }
+    });
+  }
+}
+
 export function createWebHook(guildId, id, user) {
-  request({
+  twitchRequest(guildId, {
     method: 'POST',
     uri: `https://api.twitch.tv/helix/webhooks/hub`,
     headers: {
@@ -321,7 +370,7 @@ export function createWebHook(guildId, id, user) {
 
 export function destroyWebHook(guildId, id, user) {
   return new Promise((resolve, reject) => {
-    request({
+    twitchRequest(guildId, {
       method: 'POST',
       uri: `https://api.twitch.tv/helix/webhooks/hub`,
       headers: {
