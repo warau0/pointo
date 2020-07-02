@@ -331,7 +331,11 @@ export function twitchRequest(guildId, requestData, callback) {
             });
     
             if (requestData) {
-              return request(requestData, callback);
+              const newRequestData = {
+                ...requestData,
+                headers: { ...requestData.headers, Authorization: `Bearer ${body.access_token}` },
+              };
+              return request(newRequestData, callback);
             } else {
               callback();
             }
