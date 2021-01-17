@@ -364,7 +364,7 @@ export function createWebHook(guildId, id, user) {
     // TODO Create a timeout refreshing webhook if bot is still up when lease expires.
   }, (err, res) => {
     if (err) { return console.log('Failed creating webhook', err); }
-    if (res.statusCode === 202) {
+    if (res && res.statusCode === 202) {
       console.log(`Created webhook: ${user} (${id})`);
     } else {
       console.error(res);
@@ -388,7 +388,7 @@ export function destroyWebHook(guildId, id, user) {
         'hub.callback': `${CONFIG.HOST_URI}:${CONFIG.HOST_PORT}/twitch/unsub/${id}`,
       },
     }, (err, res) => {
-      if (res.statusCode === 202) {
+      if (res && res.statusCode === 202) {
         console.log(`Destroyed webhook: ${user} (${id})`);
         resolve();
       } else {
