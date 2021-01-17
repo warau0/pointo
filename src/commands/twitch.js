@@ -11,7 +11,9 @@ export const group = 'settings';
 
 export function run(message) {
     const msg = utils.stripCommand(message);
+    return message.channel.send(utils.formatResponse('neg', '', 'Stream announcements have been disabled.'));
 
+    /*
     if (!msg) {
         if (GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.length) {
             return message.channel.send(`:film_frames: **Twitch streams:**\n${GUILD_CONFIGS[message.guild.id].TWITCH_STREAMS.map(member =>
@@ -68,4 +70,5 @@ export function run(message) {
             }
         });
     }
+    */
 }

@@ -56,10 +56,10 @@ export function loadGuildConfigs(guilds) {
           }
         }
 
-        if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length && GUILD_CONFIGS[guild.id].TWITCH_TOKEN) {
+        /* if (GUILD_CONFIGS[guild.id].TWITCH_STREAMS.length && GUILD_CONFIGS[guild.id].TWITCH_TOKEN) {
           // Guild has set up twitch stream watchers.
           twitchRequest(guild.id, null, () => createWebHooks(guild.id, GUILD_CONFIGS[guild.id].TWITCH_STREAMS));
-        }
+        } */
       }
     });
   });
@@ -245,6 +245,7 @@ export function checkGuildConfig(guild) {
   }
 }
 
+/*
 export function twitchStatusChange(streamerID, body) {
   if (body.data.length > 0) {
     Object.values(GUILD_CONFIGS).forEach(guild => {
@@ -424,3 +425,4 @@ export function destroyWebHooks() {
   });
   return promises;
 }
+*/

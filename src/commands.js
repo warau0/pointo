@@ -20,9 +20,9 @@ import * as roletoggle from './commands/roletoggle';
 import * as say from './commands/say';
 import * as stats from './commands/stats';
 import * as support from './commands/support';
-import * as tauth from './commands/tauth';
-import * as treset from './commands/treset';
-import * as twitch from './commands/twitch';
+// import * as tauth from './commands/tauth';
+// import * as treset from './commands/treset';
+// import * as twitch from './commands/twitch';
 import * as uinfo from './commands/uinfo';
 
 export default utils.extractAliases({
@@ -46,8 +46,8 @@ export default utils.extractAliases({
     say,
     stats,
     support,
-    tauth,
-    treset,
-    twitch,
+    // tauth,
+    // treset,
+    // twitch,
     uinfo,
 });

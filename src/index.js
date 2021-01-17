@@ -72,6 +72,7 @@ CLIENT.on('error', err => {
 
 CLIENT.login(CONFIG.DISCORD_TOKEN);
 
+/*
 app.get('/twitch/sub/:user', function (req, res) {
   res
   .set('Content-Type', 'text/plain')
@@ -113,3 +114,4 @@ process.on('SIGINT', () => {
     setTimeout(() => process.exit(1), 3000);
   });
 });
+*/
