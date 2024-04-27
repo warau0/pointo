@@ -1,73 +1,93 @@
-import {google} from "googleapis/build/src/index";
-require('@babel/polyfill');
-import Discord from 'discord.js';
-const bodyParser = require('body-parser');
-const app = require('express')();
-app.use(bodyParser.json());
+import { REST, Routes, Client, GatewayIntentBits } from 'discord.js';
+import { google } from 'googleapis';
+import express from 'express';
+import fs from 'fs';
+import open from 'open';
+import commands, { command_list } from './command_list.js';
+import config from '../config.json' with { type: 'json' };
 
-import * as utils from './utils';
-import commands from './commands';
-
-/**
- * Global variables:
- *
- * CLIENT: Connected Discord websocket client.
- * CONFIG: Global bot config, has for example Discord API key.
- * GOOGLE_AUTH: OAuth2 client used when generating access tokens.
- * GUILD_CONFIGS: Local bot configs for all connected servers, has for example command prefix.
- * GUILD_TEMP: Guild things that shouldn't be saved to disk, such as Google auth client.
- */
-global.CLIENT = new Discord.Client();
-global.CONFIG = {};
-global.GOOGLE_AUTH = null;
-global.GUILD_CONFIGS = {};
-global.GUILD_TEMP = {};
-
-try {
-  CONFIG = require('../config.json');
-  global.GOOGLE_AUTH = new google.auth.OAuth2(
-    CONFIG.GOOGLE_CLIENT_ID, CONFIG.GOOGLE_CLIENT_SECRET, 'urn:ietf:wg:oauth:2.0:oob',
-  );
-} catch(e) {
-  throw('Error: config.json file does not exist in project root.');
+const registerCommands = async (config) => {
+  try {
+    const rest = new REST({ version: '10' }).setToken(config.DISCORD_TOKEN);
+    await rest.put(Routes.applicationCommands(config.DISCORD_CLIENT_ID), { body: command_list });
+    console.log('Successfully reloaded commands.');
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-CLIENT.on('ready', () => {
-  utils.checkReboot();
-  utils.loadGuildConfigs(CLIENT.guilds);
-  CLIENT.user.setActivity('Give me your points!');
-  console.log(`Logged in in as ${CLIENT.user.tag}!`);
-  console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
-});
+const discordLogin = (config, googleAuthClient) => {
+  const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-CLIENT.on('guildCreate', guild => {
-  utils.guildCreate(guild);
-  console.log(`New guild: ${guild.name} (id: ${guild.id}), users: ${guild.memberCount}`);
-  console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
-});
+  client.on('ready', () => {
+    console.log(`Logged in and ready as ${client.user.tag}.`);
+  });
 
-/* Due to connectively issues with Discord the leave functionality is disabled.
-CLIENT.on('guildDelete', guild => {
-  utils.guildDelete(guild);
-  console.log(`Deleted guild: ${guild.name} (id: ${guild.id})`);
-  console.log(`Serving ${CLIENT.guilds.size} server${CLIENT.guilds.size > 1 ? 's' : ''}`);
-});
-*/
+  client.on('interactionCreate', async interaction => {
+    if (!interaction.isChatInputCommand()) return;
 
-CLIENT.on('message', async message => {
-  if (!message.guild) return;
-  if (message.author.bot) return;
+    try {
+      switch(interaction.commandName) {
+        case 'ping': await commands.ping(config, interaction); break;
+        case 'leaderboard': await commands.leaderboard(config, interaction, googleAuthClient); break;
+        case 'points': await commands.points(config, interaction, googleAuthClient); break;
+        default: break;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
-  const prefix = utils.getPrefix(message);
-  if(!message.content.toLowerCase().startsWith(prefix)) return;
+  client.login(config.DISCORD_TOKEN);
+}
 
-  const cmd = commands[message.content.split(' ')[0].slice(prefix.length).toLowerCase()];
-  if (cmd) cmd.run(message);
-});
+const listenForOAuthCallback = (googleAuthClient, googleAuthUrl) => {
+  const app = express();
 
-CLIENT.on('error', err => {
-  console.error(err);
-  process.exit(1);
-});
+  app.get('/oauth2callback', (req, res) => {
+    const code = req.query.code;
 
-CLIENT.login(CONFIG.DISCORD_TOKEN);
+    googleAuthClient.getToken(code, (err, tokens) => {
+      if (err) {
+        console.error('Error getting OAuth tokens.');
+        throw err;
+      }
+      fs.writeFileSync('./auth.json', JSON.stringify(tokens))
+      googleAuthClient.setCredentials(tokens);
+      console.log('Google credentials set.')
+      res.send('Google auth successful.');
+      server.close();
+    });
+  });
+
+  const server = app.listen(3000, () => {
+    open(googleAuthUrl, { wait: false });
+  });
+}
+
+const googleLogin = (config) => {
+  const googleAuthClient = new google.auth.OAuth2(
+    config.GOOGLE_CLIENT_ID,
+    config.GOOGLE_CLIENT_SECRET,
+    'http://localhost:3000/oauth2callback'
+  );
+
+  try {
+    const tokens = JSON.parse(fs.readFileSync('./auth.json', 'utf8'));
+    googleAuthClient.setCredentials(tokens);
+    console.log('Google credentials set.')
+  } catch (err) {
+    const googleAuthUrl = googleAuthClient.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+  
+    listenForOAuthCallback(googleAuthClient, googleAuthUrl)
+  }
+  return googleAuthClient;
+}
+
+const googleAuthClient = googleLogin(config)
+
+registerCommands(config)
+discordLogin(config, googleAuthClient)

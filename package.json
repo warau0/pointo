@@ -1,35 +1,29 @@
 {
   "name": "pointo-bot",
-  "version": "4.0.0",
-  "description": "Discord bot that can count and some other stuff.",
+  "version": "1.0.0",
+  "description": "Discord bot that can count.",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "build": "rimraf dist/* && yarn && babel src --out-dir dist",
-    "start": "node dist/index.js",
-    "dev": "yarn build && yarn start"
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/warau0/pointo"
   },
   "keywords": [
     "discord",
-    "bot",
-    "basic",
-    "math"
+    "bot"
   ],
   "author": "",
   "license": "MIT",
   "homepage": "",
   "dependencies": {
-    "@babel/cli": "^7.24.1",
-    "@babel/core": "^7.24.4",
-    "@babel/preset-env": "^7.24.4",
-    "body-parser": "^1.20.2",
+    "bufferutil": "^4.0.8",
     "discord.js": "^14.14.1",
     "express": "^4.19.2",
     "googleapis": "^134.0.0",
-    "moment": "^2.30.1",
+    "open": "^10.1.0",
     "rimraf": "^5.0.5"
   }
 }

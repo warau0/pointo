@@ -1,7 +1,6 @@
 .idea
-node_modules/
-dist/
-servers/
+.vscode
+node_modules
 
 config.json
-reboot.json
+auth.json
