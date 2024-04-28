@@ -11,6 +11,8 @@ You provide the bot with a Google spreadsheet and then anyone can tally up their
 
 3. A Google sheet that will hold all the points.
 
+4. Node.js 20.
+
 ### Setup
 
 1. Make a `config.json` file in project root that looks like this example (with your own values):

@@ -31,6 +31,7 @@ const discordLogin = (config, googleAuthClient) => {
         case 'ping': await commands.ping(config, interaction); break;
         case 'leaderboard': await commands.leaderboard(config, interaction, googleAuthClient); break;
         case 'points': await commands.points(config, interaction, googleAuthClient); break;
+        case 'house': await commands.house(config, interaction, googleAuthClient); break;
         default: break;
       }
     } catch (err) {
